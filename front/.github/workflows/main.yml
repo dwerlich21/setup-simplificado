@@ -23,7 +23,7 @@ jobs:
           cache-dependency-path: yarn.lock
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: yarn install --frozen-lockfile --ignore-engines
 
       - name: Prepare environment
         run: cp src/env.example.js src/env.js
