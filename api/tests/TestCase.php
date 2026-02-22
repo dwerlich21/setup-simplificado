@@ -42,9 +42,9 @@ abstract class TestCase extends BaseTestCase
     protected function actingAsAdmin(array $extraAttributes = []): User
     {
         $permissions = [
-            'users.index', 'users.store', 'users.show', 'users.update', 'users.destroy',
+            'users.index', 'users.store', 'users.show', 'users.edit', 'users.destroy',
             'users.change-active', 'users.bulk-delete', 'users.bulk-change-active',
-            'goals.index', 'goals.store', 'goals.show', 'goals.update', 'goals.destroy',
+            'goals.index', 'goals.store', 'goals.show', 'goals.edit', 'goals.destroy',
             'goals.change-active', 'goals.bulk-delete', 'goals.bulk-change-active',
             'notifications.index', 'notifications.unread-count', 'notifications.mark-read',
             'notifications.mark-all-read', 'notifications.bulk-delete', 'notifications.destroy',
