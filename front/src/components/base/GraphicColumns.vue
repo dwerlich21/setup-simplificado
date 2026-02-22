@@ -10,7 +10,7 @@ import http from "@/http";
 export default {
 
     props: {
-        url: String,
+        url: { type: String, default: '' },
     },
 
     setup(props) {

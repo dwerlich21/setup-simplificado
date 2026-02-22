@@ -41,20 +41,20 @@
           @load-more="handleLoadMore"
         >
           <!-- Slot para header extra da coluna -->
-          <template #headerExtra="{ column }">
+          <template #headerExtra="{ column: columnData }">
             <slot
               name="columnHeader"
-              :column="column"
+              :column="columnData"
             />
           </template>
 
           <!-- Slot para itens da coluna -->
-          <template #default="{ item, index, dragging }">
+          <template #default="{ item, index, dragging: isDragging }">
             <slot
               name="item"
               :item="item"
               :index="index"
-              :dragging="dragging"
+              :dragging="isDragging"
               :column="column"
             />
           </template>

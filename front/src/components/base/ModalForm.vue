@@ -40,8 +40,8 @@ import {ValidateForm} from "@/composables/cruds";
 import {endLoading, startLoading} from "@/composables/spinners";
 
 const props = defineProps({
-    session: String,
-    title: String,
+    session: { type: String, default: '' },
+    title: { type: String, default: '' },
     size: {
         type: String,
         required: false,
@@ -62,6 +62,7 @@ function validation() {
     emits('submit-form');
 }
 
+// eslint-disable-next-line no-undef
 watch(() => apiStore.showModalForm, (newValue) => {
     openedModal.value = newValue;
 });

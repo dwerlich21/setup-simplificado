@@ -1,7 +1,7 @@
 <script setup>
 import {ref, onMounted, defineProps, defineEmits, computed, watch} from 'vue';
 
-import {encodeId, getUrl} from '@/composables/functions';
+import {encodeId} from '@/composables/functions';
 import {setSessions} from '@/composables/setSessions';
 import {maskCpfCnpj, maskDate, maskPhone} from "@/composables/masks";
 import {usePermissions} from "@/utils/permissions.js";
@@ -45,15 +45,15 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
-    export_pdf: {
+    exportPdf: {
         type: Boolean,
         default: false,
     },
-    export_csv: {
+    exportCsv: {
         type: Boolean,
         default: false,
     },
-    button_modal: {
+    buttonModal: {
         type: Boolean,
         default: false,
     },
@@ -180,189 +180,189 @@ onMounted(async () => {
 </script>
 
 <template>
-    <BCardHeader class="border border-dashed border-end-0 border-start-0 border-top-0">
-        <div class="d-md-flex align-items-center">
-            <h5 class="card-title mb-0 flex-grow-1">
-                {{ titlePluralize }}
-            </h5>
-            <div
-                v-if="title"
-                class="flex-shrink-0"
-            >
-                <div class="d-lg-flex flex-wrap gap-2">
-                    <div class="app-search d-none d-md-block p-0">
-                        <div class="position-relative">
-                            <input
-                                v-model="formData.global"
-                                type="text"
-                                class="form-control"
-                                placeholder="Busca global"
-                                autocomplete="off"
-                                @keyup.enter="setFilter()"
-                            >
-                            <span class="mdi mdi-magnify search-widget-icon"/>
-                            <span
-                                class="mdi mdi-close pointer close-widget-icon"
-                                @click="formData.global = ''; setFilter()"
-                            />
-                        </div>
-                    </div>
-
-                    <BButton
-                        v-if="views"
-                        id="grid-view-button"
-                        v-b-tooltip.hover="'Visualizar em cards'"
-                        type="button"
-                        class="btn btn-soft-info nav-link btn-icon fs-14 filter-button"
-                        :class="{'active' : viewsType === 'card'}"
-                        @click="newView('card')"
-                    >
-                        <i class="ri-grid-fill"/>
-                    </BButton>
-
-                    <BButton
-                        v-if="views"
-                        id="list-view-button"
-                        v-b-tooltip.hover="'Visualizar em tabela'"
-                        type="button"
-                        class="btn btn-soft-info nav-link  btn-icon fs-14 filter-button ms-2"
-                        :class="{'active' : viewsType === 'table'}"
-                        @click="newView('table')"
-                    >
-                        <i class="ri-list-unordered"/>
-                    </BButton>
-
-                    <BButton
-                        v-if="export_pdf"
-                        id="list-view-button"
-                        type="button"
-                        title="Exportar CSV"
-                        class="btn btn-soft-danger btn-icon fs-14 filter-button ms-2"
-                        @click="exportFile('pdf')"
-                    >
-                        <i class="ri-file-pdf-fill"/>
-                    </BButton>
-
-                    <BButton
-                        v-if="export_csv"
-                        id="list-view-button"
-                        type="button"
-                        title="Exportar CSV"
-                        class="btn btn-soft-success btn-icon fs-14 filter-button ms-2"
-                        @click="exportFile('csv')"
-                    >
-                        <i class="ri-file-excel-2-fill"/>
-                    </BButton>
-
-                    <BButton
-                        v-if="Object.keys(formData || {}).length > 0"
-                        v-b-tooltip.hover="!showFilter ? 'Exibir Filtros' : 'Esconder Filtros'"
-                        type="button"
-                        class="btn bg-soft-secondary nav-link btn-icon fs-14 filter-button"
-                        @click="showFilter = !showFilter"
-                    >
-                        <span
-                            v-if="countFilter > 0"
-                            class="badge bg-info position-absolute top-0 start-90 translate-middle px-1"
-                        >{{ countFilter }}
-                        </span>
-                        <i class="ri-filter-2-fill"/>
-                    </BButton>
-
-                    <BButton
-                        v-if="button_modal && canCreate"
-                        variant="primary"
-                        class="add-btn"
-                        @click="openModal"
-                    >
-                        <i class="ri-add-line align-bottom me-1"/>
-                        {{ title }}
-                    </BButton>
-
-                    <router-link
-                        v-else-if="canCreate && !hideAddButton"
-                        class="btn btn-primary"
-                        :to="{ name: `${endpoint}-form`}"
-                    >
-                        <i class="ri-add-line align-bottom me-1"/>
-                        {{ title }}
-                    </router-link>
-                </div>
+  <BCardHeader class="border border-dashed border-end-0 border-start-0 border-top-0">
+    <div class="d-md-flex align-items-center">
+      <h5 class="card-title mb-0 flex-grow-1">
+        {{ titlePluralize }}
+      </h5>
+      <div
+        v-if="title"
+        class="flex-shrink-0"
+      >
+        <div class="d-lg-flex flex-wrap gap-2">
+          <div class="app-search d-none d-md-block p-0">
+            <div class="position-relative">
+              <input
+                v-model="formData.global"
+                type="text"
+                class="form-control"
+                placeholder="Busca global"
+                autocomplete="off"
+                @keyup.enter="setFilter()"
+              >
+              <span class="mdi mdi-magnify search-widget-icon" />
+              <span
+                class="mdi mdi-close pointer close-widget-icon"
+                @click="formData.global = ''; setFilter()"
+              />
             </div>
+          </div>
+
+          <BButton
+            v-if="views"
+            id="grid-view-button"
+            v-b-tooltip.hover="'Visualizar em cards'"
+            type="button"
+            class="btn btn-soft-info nav-link btn-icon fs-14 filter-button"
+            :class="{'active' : viewsType === 'card'}"
+            @click="newView('card')"
+          >
+            <i class="ri-grid-fill" />
+          </BButton>
+
+          <BButton
+            v-if="views"
+            id="list-view-button"
+            v-b-tooltip.hover="'Visualizar em tabela'"
+            type="button"
+            class="btn btn-soft-info nav-link  btn-icon fs-14 filter-button ms-2"
+            :class="{'active' : viewsType === 'table'}"
+            @click="newView('table')"
+          >
+            <i class="ri-list-unordered" />
+          </BButton>
+
+          <BButton
+            v-if="exportPdf"
+            id="list-view-button"
+            type="button"
+            title="Exportar CSV"
+            class="btn btn-soft-danger btn-icon fs-14 filter-button ms-2"
+            @click="exportFile('pdf')"
+          >
+            <i class="ri-file-pdf-fill" />
+          </BButton>
+
+          <BButton
+            v-if="exportCsv"
+            id="list-view-button"
+            type="button"
+            title="Exportar CSV"
+            class="btn btn-soft-success btn-icon fs-14 filter-button ms-2"
+            @click="exportFile('csv')"
+          >
+            <i class="ri-file-excel-2-fill" />
+          </BButton>
+
+          <BButton
+            v-if="Object.keys(formData || {}).length > 0"
+            v-b-tooltip.hover="!showFilter ? 'Exibir Filtros' : 'Esconder Filtros'"
+            type="button"
+            class="btn bg-soft-secondary nav-link btn-icon fs-14 filter-button"
+            @click="showFilter = !showFilter"
+          >
+            <span
+              v-if="countFilter > 0"
+              class="badge bg-info position-absolute top-0 start-90 translate-middle px-1"
+            >{{ countFilter }}
+            </span>
+            <i class="ri-filter-2-fill" />
+          </BButton>
+
+          <BButton
+            v-if="buttonModal && canCreate"
+            variant="primary"
+            class="add-btn"
+            @click="openModal"
+          >
+            <i class="ri-add-line align-bottom me-1" />
+            {{ title }}
+          </BButton>
+
+          <router-link
+            v-else-if="canCreate && !hideAddButton"
+            class="btn btn-primary"
+            :to="{ name: `${endpoint}-form`}"
+          >
+            <i class="ri-add-line align-bottom me-1" />
+            {{ title }}
+          </router-link>
         </div>
-    </BCardHeader>
+      </div>
+    </div>
+  </BCardHeader>
 
-    <!-- Adicionando transição para o card body -->
-    <transition name="slide-fade">
-        <BCardBody
-            v-if="showFilter"
-            class="border border-dashed border-end-0 border-start-0 border-top-0 py-2 filter-container"
+  <!-- Adicionando transição para o card body -->
+  <transition name="slide-fade">
+    <BCardBody
+      v-if="showFilter"
+      class="border border-dashed border-end-0 border-start-0 border-top-0 py-2 filter-container"
+    >
+      <div
+        class="bg-light rounded-2 p-2"
+        style="margin: 0 -10px"
+      >
+        <b-form
+          id="filter"
+          @submit.prevent="setFilter()"
         >
-            <div
-                class="bg-light rounded-2 p-2"
-                style="margin: 0 -10px"
+          <BRow>
+            <BCol
+              v-for="(input, index) in filter"
+              :key="'input-filter-' + index"
+              class="my-1"
+              :md="input.col"
             >
-                <b-form
-                    id="filter"
-                    @submit.prevent="setFilter()"
-                >
-                    <BRow>
-                        <BCol
-                            v-for="(input, index) in filter"
-                            :key="'input-filter-' + index"
-                            class="my-1"
-                            :md="input.col"
-                        >
-                            <Multiselect
-                                v-if="input.options"
-                                :id="input.name + 'Filter'"
-                                v-model="formData[input.name]"
-                                :loading="Object.keys(input.options).length === 0"
-                                :mode="input.mode || 'single'"
-                                :close-on-select="!input.mode || input.mode === 'single'"
-                                :searchable="true"
-                                :create-option="false"
-                                :options="input.options"
-                                :placeholder="input.placeholder"
-                            />
+              <Multiselect
+                v-if="input.options"
+                :id="input.name + 'Filter'"
+                v-model="formData[input.name]"
+                :loading="Object.keys(input.options).length === 0"
+                :mode="input.mode || 'single'"
+                :close-on-select="!input.mode || input.mode === 'single'"
+                :searchable="true"
+                :create-option="false"
+                :options="input.options"
+                :placeholder="input.placeholder"
+              />
 
-                            <input
-                                v-else
-                                v-model="formData[input.name]"
-                                class="form-control"
-                                :placeholder="input.placeholder"
-                                :name="input.name"
-                                :type="input.type || 'text'"
-                                @keyup="getMask(input)"
-                            >
-                        </BCol>
+              <input
+                v-else
+                v-model="formData[input.name]"
+                class="form-control"
+                :placeholder="input.placeholder"
+                :name="input.name"
+                :type="input.type || 'text'"
+                @keyup="getMask(input)"
+              >
+            </BCol>
 
-                        <div
-                            v-if="Object.keys(filter).length > 0"
-                            class="col d-flex justify-content-end my-1"
-                        >
-                            <button
-                                class="btn btn-soft-danger ms-2"
-                                style="height: 40px"
-                                type="reset"
-                                @click="resetTable"
-                            >
-                                Limpar
-                            </button>
+            <div
+              v-if="Object.keys(filter).length > 0"
+              class="col d-flex justify-content-end my-1"
+            >
+              <button
+                class="btn btn-soft-danger ms-2"
+                style="height: 40px"
+                type="reset"
+                @click="resetTable"
+              >
+                Limpar
+              </button>
 
-                            <button
-                                type="submit"
-                                class="btn btn-soft-success ms-2"
-                                style="height: 40px"
-                            >
-                                Buscar
-                            </button>
-                        </div>
-                    </BRow>
-                </b-form>
+              <button
+                type="submit"
+                class="btn btn-soft-success ms-2"
+                style="height: 40px"
+              >
+                Buscar
+              </button>
             </div>
-        </BCardBody>
-    </transition>
+          </BRow>
+        </b-form>
+      </div>
+    </BCardBody>
+  </transition>
 </template>
 
 <style scoped>

@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue';
 
-const props = defineProps({
+defineProps({
     disabled: {
         type: Boolean,
         default: false,
@@ -31,37 +31,37 @@ const exportExcel = async () => {
 </script>
 
 <template>
-    <div class="d-flex gap-2">
-        <b-button
-            variant="danger"
-            size="sm"
-            :disabled="disabled || loadingPdf"
-            @click="exportPdf"
-        >
-            <span v-if="loadingPdf">
-                <span class="spinner-border spinner-border-sm me-1"></span>
-                Gerando...
-            </span>
-            <span v-else>
-                <i class="ri-file-pdf-line me-1"></i>
-                Exportar PDF
-            </span>
-        </b-button>
+  <div class="d-flex gap-2">
+    <b-button
+      variant="danger"
+      size="sm"
+      :disabled="disabled || loadingPdf"
+      @click="exportPdf"
+    >
+      <span v-if="loadingPdf">
+        <span class="spinner-border spinner-border-sm me-1" />
+        Gerando...
+      </span>
+      <span v-else>
+        <i class="ri-file-pdf-line me-1" />
+        Exportar PDF
+      </span>
+    </b-button>
 
-        <b-button
-            variant="success"
-            size="sm"
-            :disabled="disabled || loadingExcel"
-            @click="exportExcel"
-        >
-            <span v-if="loadingExcel">
-                <span class="spinner-border spinner-border-sm me-1"></span>
-                Gerando...
-            </span>
-            <span v-else>
-                <i class="ri-file-excel-line me-1"></i>
-                Exportar Excel
-            </span>
-        </b-button>
-    </div>
+    <b-button
+      variant="success"
+      size="sm"
+      :disabled="disabled || loadingExcel"
+      @click="exportExcel"
+    >
+      <span v-if="loadingExcel">
+        <span class="spinner-border spinner-border-sm me-1" />
+        Gerando...
+      </span>
+      <span v-else>
+        <i class="ri-file-excel-line me-1" />
+        Exportar Excel
+      </span>
+    </b-button>
+  </div>
 </template>

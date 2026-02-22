@@ -38,6 +38,7 @@ const cropper = ref(null);
 
 const props = defineProps({
     img: {
+        type: [String, File, Object],
         required: true
     },
     proportion: {

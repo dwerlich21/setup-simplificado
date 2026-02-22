@@ -42,11 +42,11 @@ onMounted(() => {
               class="mt-5"
             >
               <b-card-body class="p-4 text-center">
-                  <img
-                      src="@/assets/logos/logo-light.png"
-                      alt="logo_libertas"
-                      height="50"
-                  >
+                <img
+                  src="@/assets/logos/logo-light.png"
+                  alt="logo_libertas"
+                  height="50"
+                >
                 <lottie
                   colors="primary:#405189,secondary:#08a88a"
                   :options="defaultOptions"

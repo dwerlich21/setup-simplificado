@@ -1,157 +1,157 @@
 <!--eslint-disable no-mixed-spaces-and-tabs-->
 <template>
-    <BCardBody>
-        <div class="table-responsive table-card">
-            <table
-                id="table"
-                class="table align-middle mb-0 table-striped table-hover"
+  <BCardBody>
+    <div class="table-responsive table-card">
+      <table
+        id="table"
+        class="table align-middle mb-0 table-striped table-hover"
+      >
+        <thead>
+          <tr>
+            <!--                            Gerar as colunas do cabeçalho das tables-->
+            <th
+              v-for="(thead, index) in table"
+              :key="'th-table-list' + index"
+              :class="{'text-center' : (index > 0 && table[0].column !== 'check' && table[0].column !== 'ID') || (index > 1 && ((table[0].column === 'check' || table[0].column === 'ID')))}"
+              :style="`width: ${thead.column === 'check' || thead.column === 'ID' ? '1%' : 'auto'}`"
+              class="text-nowrap"
             >
-                <thead>
-                <tr>
-                    <!--                            Gerar as colunas do cabeçalho das tables-->
-                    <th
-                        v-for="(thead, index) in table"
-                        :key="'th-table-list' + index"
-                        :class="{'text-center' : (index > 0 && table[0].column !== 'check' && table[0].column !== 'ID') || (index > 1 && ((table[0].column === 'check' || table[0].column === 'ID')))}"
-                        :style="`width: ${thead.column === 'check' || thead.column === 'ID' ? '1%' : 'auto'}`"
-                        class="text-nowrap"
-                    >
-                        <input
-                            v-if="thead.column === 'check'"
-                            id="selectAll"
-                            type="checkbox"
-                            class="form-check-input"
-                            @change="selectAll"
-                        >
-                        <span v-else>{{ thead.column }}</span>
-                        <span style="white-space: nowrap">
-                            <i
-                                v-if="thead.order"
-                                class="las la-arrow-down pointer"
-                                :class="thead.order === order_by && order ==='asc' ? 'active' : ''"
-                                @click="newOrder(thead.order, 'asc')"
-                            />
-                            <i
-                                v-if="thead.order"
-                                class="las la-arrow-up pointer"
-                                :class="thead.order === order_by && order ==='desc' ? 'active' : ''"
-                                @click="newOrder(thead.order, 'desc')"
-                            />
-                        </span>
-                    </th>
-                </tr>
-                </thead>
+              <input
+                v-if="thead.column === 'check'"
+                id="selectAll"
+                type="checkbox"
+                class="form-check-input"
+                @change="selectAll"
+              >
+              <span v-else>{{ thead.column }}</span>
+              <span style="white-space: nowrap">
+                <i
+                  v-if="thead.order"
+                  class="las la-arrow-down pointer"
+                  :class="thead.order === order_by && order ==='asc' ? 'active' : ''"
+                  @click="newOrder(thead.order, 'asc')"
+                />
+                <i
+                  v-if="thead.order"
+                  class="las la-arrow-up pointer"
+                  :class="thead.order === order_by && order ==='desc' ? 'active' : ''"
+                  @click="newOrder(thead.order, 'desc')"
+                />
+              </span>
+            </th>
+          </tr>
+        </thead>
 
-                <!--                        Se encontrar resultados da api gerar as linhas-->
-                <tbody
-                    v-if="listAll.message && Object.keys(listAll.message).length > 0"
-                    style="overflow-y: hidden"
-                >
-                <tr
-                    v-for="line in listAll.message"
-                    :id="'line' + line.id"
-                    :key="'tr-table-list' + line.id"
-                >
-                    <td
-                        v-for="(k, tdIndex) in keys"
-                        :key="'td-table-list' + tdIndex"
-                        :class="{'text-center' : (tdIndex > 0 && table[0].column !== 'check' && table[0].column !== 'ID') || (tdIndex > 1 && ((table[0].column === 'check' || table[0].column === 'ID'))),
+        <!--                        Se encontrar resultados da api gerar as linhas-->
+        <tbody
+          v-if="listAll.message && Object.keys(listAll.message).length > 0"
+          style="overflow-y: hidden"
+        >
+          <tr
+            v-for="line in listAll.message"
+            :id="'line' + line.id"
+            :key="'tr-table-list' + line.id"
+          >
+            <td
+              v-for="(k, tdIndex) in keys"
+              :key="'td-table-list' + tdIndex"
+              :class="{'text-center' : (tdIndex > 0 && table[0].column !== 'check' && table[0].column !== 'ID') || (tdIndex > 1 && ((table[0].column === 'check' || table[0].column === 'ID'))),
                        'text-nowrap': k === 'actions'
               }"
-                    >
-                        <slot
-                            :name="k"
-                            :value="line"
-                        >
-                            {{ k.indexOf('.') > -1 ? getNestedValue(line, k) : (line[k] || 'N/A') }}
-                        </slot>
-                    </td>
-                </tr>
-                </tbody>
-
-                <!--                        Se não mensagem de nada encontrado-->
-                <tbody v-else-if="listAll.message">
-                <tr>
-                    <td
-                        :colspan="Object.keys(table).length"
-                        class="text-center"
-                    >
-                        Nenhum resultado
-                        encontrado
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-
-            <span
-                id="spinnerTable"
-                class="spinner spinner-border flex-shrink-0 mx-auto"
-                role="status"
             >
-                <span class="visually-hidden"/>
-            </span>
+              <slot
+                :name="k"
+                :value="line"
+              >
+                {{ k.indexOf('.') > -1 ? getNestedValue(line, k) : (line[k] || 'N/A') }}
+              </slot>
+            </td>
+          </tr>
+        </tbody>
+
+        <!--                        Se não mensagem de nada encontrado-->
+        <tbody v-else-if="listAll.message">
+          <tr>
+            <td
+              :colspan="Object.keys(table).length"
+              class="text-center"
+            >
+              Nenhum resultado
+              encontrado
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <span
+        id="spinnerTable"
+        class="spinner spinner-border flex-shrink-0 mx-auto"
+        role="status"
+      >
+        <span class="visually-hidden" />
+      </span>
+    </div>
+  </BCardBody>
+
+
+  <BCardFooter class="border-top-0">
+    <div class="align-items-center mt-xl-3 justify-content-start d-lg-flex">
+      <div class="align-items-center d-flex text-muted mb-2 mb-lg-0">
+        <div class="me-2">
+          <span>Exibir</span>
         </div>
-    </BCardBody>
-
-
-    <BCardFooter class="border-top-0">
-        <div class="align-items-center mt-xl-3 justify-content-start d-lg-flex">
-            <div class="align-items-center d-flex text-muted mb-2 mb-lg-0">
-                <div class="me-2">
-                    <span>Exibir</span>
-                </div>
-                <div class="col-auto">
-                    <select
-                        id="limitFilter"
-                        class="form-control form-select"
-                        @change="setLimit"
-                    >
-                        <option value="25">
-                            25
-                        </option>
-                        <option value="50">
-                            50
-                        </option>
-                        <option value="100">
-                            100
-                        </option>
-                        <option value="250">
-                            250
-                        </option>
-                    </select>
-                </div>
-                <div class="ms-2">
-                    <span> registros</span>
-                </div>
-            </div>
-            <div class="flex-shrink-0 me-lg-auto ms-lg-4 mb-2 mb-lg-0">
-                <div
-                    v-if="start >= 0"
-                    class="text-muted"
-                >
-                    Exibindo de
-                    <span class="fw-semibold">{{ start }}</span>
-                    a
-                    <span
-                        class="fw-semibold"
-                    >{{
-                            partial
-                     }}
-                    </span>
-                    de
-                    <span class="fw-semibold">{{ total }}</span>
-                    resultados
-                </div>
-            </div>
-
-
-            <Pagination
-                ref="paginationComponent"
-                :session="props.session"
-                @load-list="loadList"
-            />
+        <div class="col-auto">
+          <select
+            id="limitFilter"
+            class="form-control form-select"
+            @change="setLimit"
+          >
+            <option value="25">
+              25
+            </option>
+            <option value="50">
+              50
+            </option>
+            <option value="100">
+              100
+            </option>
+            <option value="250">
+              250
+            </option>
+          </select>
         </div>
-    </BCardFooter>
+        <div class="ms-2">
+          <span> registros</span>
+        </div>
+      </div>
+      <div class="flex-shrink-0 me-lg-auto ms-lg-4 mb-2 mb-lg-0">
+        <div
+          v-if="start >= 0"
+          class="text-muted"
+        >
+          Exibindo de
+          <span class="fw-semibold">{{ start }}</span>
+          a
+          <span
+            class="fw-semibold"
+          >{{
+            partial
+          }}
+          </span>
+          de
+          <span class="fw-semibold">{{ total }}</span>
+          resultados
+        </div>
+      </div>
+
+
+      <Pagination
+        ref="paginationComponent"
+        :session="props.session"
+        @load-list="loadList"
+      />
+    </div>
+  </BCardFooter>
 </template>
 
 <script setup>
@@ -178,7 +178,7 @@ const props = defineProps({
         type: Boolean,
         default: false
     },
-    button_modal: {
+    buttonModal: {
         required: false,
         type: Boolean,
         default: true
@@ -190,10 +190,12 @@ const emits = defineEmits(['update-show-card']);
 const order = ref(null);
 const order_by = ref(null);
 
+/* eslint-disable no-undef */
 const listAll = computed(() => apiStore.listAll)
 const start = computed(() => apiStore.listAll.start)
 const partial = computed(() => apiStore.listAll.partial)
 const total = computed(() => apiStore.listAll.count)
+/* eslint-enable no-undef */
 
 function setOrders() {
     const objData = JSON.parse(localStorage.getItem(props.session))
@@ -226,7 +228,7 @@ function newOrder(new_order_by, new_order) {
     localStorage.setItem(props.session, JSON.stringify(obj));
 
     const url = getUrl(props.session)
-    apiStore.getApi(url);
+    apiStore.getApi(url); // eslint-disable-line no-undef
 
 }
 
@@ -235,7 +237,7 @@ function loadList() {
     if (props.session) {
         setSessions(props.session);
         const url = getUrl(props.session);
-        apiStore.getApi(url)
+        apiStore.getApi(url) // eslint-disable-line no-undef
     } else {
         setTimeout(() => {
             loadList();
@@ -252,7 +254,7 @@ function setLimit() {
     loadTable();
 
     const url = getUrl(props.session);
-    apiStore.getApi(url);
+    apiStore.getApi(url); // eslint-disable-line no-undef
 }
 
 function selectAll() {

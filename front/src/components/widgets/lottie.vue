@@ -1,5 +1,8 @@
 <template>
-    <div :style="style" ref="lavContainer"></div>
+  <div
+    ref="lavContainer"
+    :style="style"
+  />
 </template>
 
 <script>
@@ -10,9 +13,10 @@
         type: Object,
         required: true
       },
-      height: Number,
-      width: Number,
+      height: { type: Number, default: 0 },
+      width: { type: Number, default: 0 },
     },
+    emits: ['animCreated'],
     data () {
       return {
         style: {

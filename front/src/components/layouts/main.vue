@@ -371,116 +371,114 @@ defineExpose({
 </script>
 
 <template>
-    <div id="layout-wrapper">
-        <NavBar/>
-        <div>
-            <!-- ========== Left Sidebar Start ========== -->
-            <!-- ========== App Menu ========== -->
-            <div class="app-menu navbar-menu">
-                <!-- LOGO -->
-                <div class="navbar-brand-box">
+  <div id="layout-wrapper">
+    <NavBar />
+    <div>
+      <!-- ========== Left Sidebar Start ========== -->
+      <!-- ========== App Menu ========== -->
+      <div class="app-menu navbar-menu">
+        <!-- LOGO -->
+        <div class="navbar-brand-box">
+          <!-- Light Logo-->
+          <router-link
+            to="/"
+            class="logo logo-dark"
+          >
+            <span class="logo-sm">
+              <img
+                src="../../assets/logos/icon.png"
+                alt=""
+                height="40"
+              >
+            </span>
+            <span class="logo-lg">
+              <img
+                src="../../assets/logos/logo-light.png"
+                alt=""
+                height="40"
+              >
+            </span>
+          </router-link>
 
-                    <!-- Light Logo-->
-                    <router-link
-                        to="/"
-                        class="logo logo-dark"
-                    >
-                        <span class="logo-sm">
-                            <img
-                                src="../../assets/logos/icon.png"
-                                alt=""
-                                height="40"
-                            >
-                        </span>
-                        <span class="logo-lg">
-                            <img
-                                src="../../assets/logos/logo-light.png"
-                                alt=""
-                                height="40"
-                            >
-                        </span>
-                    </router-link>
-
-                    <!-- Dark Logo-->
-                    <router-link
-                        to="/"
-                        class="logo logo-light"
-                    >
-                        <span class="logo-sm">
-                            <img
-                                src="../../assets/logos/icon-dark.png"
-                                alt=""
-                                height="40"
-                            >
-                        </span>
-                        <span class="logo-lg">
-                            <img
-                                src="../../assets/logos/logo-dark.png"
-                                alt=""
-                                height="40"
-                            >
-                        </span>
-                    </router-link>
-                    <button
-                        id="vertical-hover"
-                        type="button"
-                        class="btn btn-soft-sm p-0 fs-20 header-item float-end btn-vertical-sm-hover"
-                        @click="initActiveMenu"
-                    >
-                        <i class="ri-record-circle-line"/>
-                    </button>
-                </div>
-
-                <SimpleBar
-                    id="scrollbar"
-                    class="h-100"
-                >
-                    <Menu/>
-
-                </SimpleBar>
-                <div class="sidebar-background"/>
-            </div>
-            <!-- Left Sidebar End -->
-            <!-- Vertical Overlay-->
-            <div
-                id="overlay"
-                class="vertical-overlay"
-            />
-        </div>
-        <!-- ============================================================== -->
-        <!-- Start Page Content here -->
-        <!-- ============================================================== -->
-
-        <div class="main-content">
-            <div class="page-content">
-                <!-- Start Content-->
-                <b-container
-                    fluid
-                    class="position-relative"
-                >
-                    <slot/>
-                </b-container>
-            </div>
-            <Footer/>
-        </div>
-        <div>
-            <b-button
-                id="back-to-top"
-                variant="danger"
-                class="btn-icon"
-                @click="topFunction"
-            >
-                <i class="ri-arrow-up-line"/>
-            </b-button>
+          <!-- Dark Logo-->
+          <router-link
+            to="/"
+            class="logo logo-light"
+          >
+            <span class="logo-sm">
+              <img
+                src="../../assets/logos/icon-dark.png"
+                alt=""
+                height="40"
+              >
+            </span>
+            <span class="logo-lg">
+              <img
+                src="../../assets/logos/logo-dark.png"
+                alt=""
+                height="40"
+              >
+            </span>
+          </router-link>
+          <button
+            id="vertical-hover"
+            type="button"
+            class="btn btn-soft-sm p-0 fs-20 header-item float-end btn-vertical-sm-hover"
+            @click="initActiveMenu"
+          >
+            <i class="ri-record-circle-line" />
+          </button>
         </div>
 
-        <!-- Spinner - Agora usando o novo componente -->
-        <Spinner
-            :show="spinnerState.show"
-            :message="spinnerState.message"
-            :sub-message="spinnerState.subMessage"
-            :overlay="spinnerState.overlay"
-            :z-index="spinnerState.zIndex"
-        />
+        <SimpleBar
+          id="scrollbar"
+          class="h-100"
+        >
+          <Menu />
+        </SimpleBar>
+        <div class="sidebar-background" />
+      </div>
+      <!-- Left Sidebar End -->
+      <!-- Vertical Overlay-->
+      <div
+        id="overlay"
+        class="vertical-overlay"
+      />
     </div>
+    <!-- ============================================================== -->
+    <!-- Start Page Content here -->
+    <!-- ============================================================== -->
+
+    <div class="main-content">
+      <div class="page-content">
+        <!-- Start Content-->
+        <b-container
+          fluid
+          class="position-relative"
+        >
+          <slot />
+        </b-container>
+      </div>
+      <Footer />
+    </div>
+    <div>
+      <b-button
+        id="back-to-top"
+        variant="danger"
+        class="btn-icon"
+        @click="topFunction"
+      >
+        <i class="ri-arrow-up-line" />
+      </b-button>
+    </div>
+
+    <!-- Spinner - Agora usando o novo componente -->
+    <Spinner
+      :show="spinnerState.show"
+      :message="spinnerState.message"
+      :sub-message="spinnerState.subMessage"
+      :overlay="spinnerState.overlay"
+      :z-index="spinnerState.zIndex"
+    />
+  </div>
 </template>

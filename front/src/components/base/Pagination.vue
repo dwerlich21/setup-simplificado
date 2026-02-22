@@ -19,8 +19,6 @@ const props = defineProps({
 
 const emit = defineEmits(['load-list']);
 
-const apiStore = {};
-
 const pages = computed(() => {
     let arr = [1];
     if (!isNaN(props.totalPages)) {
@@ -107,33 +105,33 @@ function scroll() {
 
 </script>
 <template>
-    <ul
-        id="pagination"
-        class="pagination pagination-separated mb-0 float-end"
-        style="top: auto"
+  <ul
+    id="pagination"
+    class="pagination pagination-separated mb-0 float-end"
+    style="top: auto"
+  >
+    <li
+      class="page-item"
+      :class="page === 1 ? 'disabled' : 'pointer'"
+      @click="subtractValue"
     >
-        <li
-            class="page-item"
-            :class="page === 1 ? 'disabled' : 'pointer'"
-            @click="subtractValue"
-        >
-            <a class="page-link">Anterior</a>
-        </li>
-        <li
-            v-for="p in pages"
-            :key="`page-pagination-${p}`"
-            :class="p === page ? 'active' : ''"
-            class="page-item pointer"
-            @click="setValue(p)"
-        >
-            <a class="page-link">{{ p }}</a>
-        </li>
-        <li
-            class="page-item"
-            :class="page === totalPages || (page === 1 && totalPages === 0 ) ? 'disabled' : 'pointer'"
-            @click="addValue"
-        >
-            <a class="page-link">Próximo</a>
-        </li>
-    </ul>
+      <a class="page-link">Anterior</a>
+    </li>
+    <li
+      v-for="p in pages"
+      :key="`page-pagination-${p}`"
+      :class="p === page ? 'active' : ''"
+      class="page-item pointer"
+      @click="setValue(p)"
+    >
+      <a class="page-link">{{ p }}</a>
+    </li>
+    <li
+      class="page-item"
+      :class="page === totalPages || (page === 1 && totalPages === 0 ) ? 'disabled' : 'pointer'"
+      @click="addValue"
+    >
+      <a class="page-link">Próximo</a>
+    </li>
+  </ul>
 </template>

@@ -322,9 +322,9 @@ export default {
 
             let charIndex = 0
             let nodeStack = [editor.value]
-            let node, foundStart = false, foundEnd = false
+            let node, foundStart = false
 
-            while (node = nodeStack.pop()) {
+            while ((node = nodeStack.pop())) {
                 if (node.nodeType === Node.TEXT_NODE) {
                     const nextCharIndex = charIndex + node.textContent.length
 
@@ -335,7 +335,6 @@ export default {
 
                     if (foundStart && savedPosition.end >= charIndex && savedPosition.end <= nextCharIndex) {
                         range.setEnd(node, savedPosition.end - charIndex)
-                        foundEnd = true
                         break
                     }
 
@@ -511,7 +510,7 @@ export default {
                     )
 
                     let node
-                    while (node = walker.nextNode()) {
+                    while ((node = walker.nextNode())) {
                         const nextCharIndex = charIndex + node.textContent.length
                         if (offsetInBlock >= charIndex && offsetInBlock <= nextCharIndex) {
                             const newRange = document.createRange()
@@ -836,15 +835,12 @@ export default {
 
         const startResize = (e, wrapper, img, handle) => {
             const startX = e.clientX
-            const startY = e.clientY
             const startWidth = parseInt(img.style.width) || img.offsetWidth
             const startHeight = parseInt(img.style.height) || img.offsetHeight
             const aspectRatio = startWidth / startHeight
 
             const onMouseMove = (e) => {
                 const deltaX = e.clientX - startX
-                const deltaY = e.clientY - startY
-
                 let newWidth = startWidth
                 let newHeight = startHeight
 
@@ -1068,29 +1064,6 @@ export default {
         const storeImageId = (imageId) => {
             if (!usedImageIds.value.includes(imageId)) {
                 usedImageIds.value.push(imageId)
-            }
-        }
-
-        // Função para marcar imagens como usadas (chamar ao salvar o conteúdo)
-        const markImagesAsUsed = async () => {
-            if (usedImageIds.value.length === 0) return
-
-            try {
-                const response = await fetch('/api/image-usage', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        image_ids: usedImageIds.value
-                    })
-                })
-
-                if (response.ok) {
-                    usedImageIds.value = [] // Limpar lista após marcar como usadas
-                }
-            } catch (error) {
-                console.error('Erro ao marcar imagens como usadas:', error)
             }
         }
 

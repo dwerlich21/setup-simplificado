@@ -1,94 +1,104 @@
 <template>
-    <div class="mb-4 card-border">
-        <BCardHeader>
-            <h5 class="mb-0">
-                Permissões
-            </h5>
-        </BCardHeader>
-        <BCardBody>
-            <div v-if="loading" class="text-center py-4">
-                <BSpinner />
-                <p class="mt-2 text-muted">Carregando permissões...</p>
+  <div class="mb-4 card-border">
+    <BCardHeader>
+      <h5 class="mb-0">
+        Permissões
+      </h5>
+    </BCardHeader>
+    <BCardBody>
+      <div
+        v-if="loading"
+        class="text-center py-4"
+      >
+        <BSpinner />
+        <p class="mt-2 text-muted">
+          Carregando permissões...
+        </p>
+      </div>
+
+      <div
+        v-else-if="permissionsList.length === 0"
+        class="text-center py-4"
+      >
+        <p class="text-muted">
+          Nenhuma permissão disponível
+        </p>
+      </div>
+
+      <BRow v-else>
+        <BCol
+          v-for="module in permissionsList"
+          :key="module.id"
+          md="6"
+          lg="4"
+          class="mb-4"
+        >
+          <div class="permission-module">
+            <!-- Módulo pai com checkbox -->
+            <div class="form-check mb-2">
+              <input
+                :id="`module-${module.id}`"
+                type="checkbox"
+                class="form-check-input"
+                :checked="isModuleChecked(module)"
+                :indeterminate.prop="isModuleIndeterminate(module)"
+                @change="toggleModule(module, $event.target.checked)"
+              >
+              <label
+                :for="`module-${module.id}`"
+                class="form-check-label fw-semibold"
+              >
+                {{ module.description }}
+              </label>
             </div>
 
-            <div v-else-if="permissionsList.length === 0" class="text-center py-4">
-                <p class="text-muted">Nenhuma permissão disponível</p>
+            <!-- Permissões filhas -->
+            <div class="ms-4">
+              <div
+                v-for="child in module.children"
+                :key="child.id"
+                class="form-check"
+              >
+                <input
+                  :id="`permission-${child.id}`"
+                  type="checkbox"
+                  class="form-check-input"
+                  :checked="isChecked(child.id)"
+                  :value="child.id"
+                  @change="togglePermission(child.id, $event.target.checked)"
+                >
+                <label
+                  :for="`permission-${child.id}`"
+                  class="form-check-label"
+                >
+                  {{ child.description }}
+                </label>
+              </div>
             </div>
+          </div>
+        </BCol>
+      </BRow>
 
-            <BRow v-else>
-                <BCol
-                    v-for="module in permissionsList"
-                    :key="module.id"
-                    md="6"
-                    lg="4"
-                    class="mb-4"
-                >
-                    <div class="permission-module">
-                        <!-- Módulo pai com checkbox -->
-                        <div class="form-check mb-2">
-                            <input
-                                :id="`module-${module.id}`"
-                                type="checkbox"
-                                class="form-check-input"
-                                :checked="isModuleChecked(module)"
-                                :indeterminate.prop="isModuleIndeterminate(module)"
-                                @change="toggleModule(module, $event.target.checked)"
-                            >
-                            <label
-                                :for="`module-${module.id}`"
-                                class="form-check-label fw-semibold"
-                            >
-                                {{ module.description }}
-                            </label>
-                        </div>
-
-                        <!-- Permissões filhas -->
-                        <div class="ms-4">
-                            <div
-                                v-for="child in module.children"
-                                :key="child.id"
-                                class="form-check"
-                            >
-                                <input
-                                    :id="`permission-${child.id}`"
-                                    type="checkbox"
-                                    class="form-check-input"
-                                    :checked="isChecked(child.id)"
-                                    :value="child.id"
-                                    @change="togglePermission(child.id, $event.target.checked)"
-                                >
-                                <label
-                                    :for="`permission-${child.id}`"
-                                    class="form-check-label"
-                                >
-                                    {{ child.description }}
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </BCol>
-            </BRow>
-
-            <!-- Ações rápidas -->
-            <div class="border-top pt-3 mt-3">
-                <BButton
-                    variant="outline-primary"
-                    size="sm"
-                    class="me-2"
-                    @click="selectAll"
-                >
-                    Selecionar Todas
-                </BButton>
-                <BButton
-                    variant="outline-secondary"
-                    size="sm"
-                    @click="deselectAll"
-                >
-                    Limpar Seleção
-                </BButton>
-            </div>
-        </BCardBody>
-    </div>
+      <!-- Ações rápidas -->
+      <div class="border-top pt-3 mt-3">
+        <BButton
+          variant="outline-primary"
+          size="sm"
+          class="me-2"
+          @click="selectAll"
+        >
+          Selecionar Todas
+        </BButton>
+        <BButton
+          variant="outline-secondary"
+          size="sm"
+          @click="deselectAll"
+        >
+          Limpar Seleção
+        </BButton>
+      </div>
+    </BCardBody>
+  </div>
 </template>
 
 <script setup>

@@ -1,75 +1,73 @@
 <template>
-    <Crud
-        ref="crudRef"
-        :title="title"
-        :title-pluralize="titlePluralize"
-        :filter="filterConfig"
-        :keys="tableKeys"
-        :table="tableConfig"
-        :actions="actionTypes"
-        :url="url"
+  <Crud
+    ref="crudRef"
+    :title="title"
+    :title-pluralize="titlePluralize"
+    :filter="filterConfig"
+    :keys="tableKeys"
+    :table="tableConfig"
+    :actions="actionTypes"
+    :url="url"
+    :endpoint="endpoint"
+    :session="session"
+    :service="userService"
+    :bulk-actions="bulkActionsConfig"
+    @bulk-delete="handleBulkDelete"
+    @bulk-change-active="handleBulkChangeActive"
+  >
+    <template #name="{ value }">
+      <div class="d-flex align-items-center">
+        <div class="avatar-sm img-thumbnail rounded-circle flex-shrink-0">
+          <img
+            v-if="value.avatar"
+            :src="`${env.url}${value.avatar}`"
+            alt=""
+            class="member-img img-fluid d-block rounded-circle"
+          >
+          <div
+            v-else
+            class="avatar-title border bg-light text-primary rounded-circle text-uppercase"
+          >
+            {{ userService.generateNickname(value.name) }}
+          </div>
+        </div>
+
+        <div class="ms-2 name">
+          <div class="fw-bold">
+            {{ value.name }}
+          </div>
+          <div class="text-muted fs-12">
+            {{ value?.position?.name }}
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <!-- Template para status do usuário -->
+    <template #change_active="{ value }">
+      <ChangeStatus
+        :value="value"
+        :endpoint="endpoint"
+      />
+    </template>
+
+    <!-- Template para coluna telefone -->
+    <template #phone="{ value }">
+      <span>{{ value.phone ? maskPhone(value.phone) : '' }}</span>
+    </template>
+
+    <!-- Template para ações -->
+    <template #actions="{ value }">
+      <Actions
+        :types="actionTypes"
+        :value="value"
         :endpoint="endpoint"
         :session="session"
-        :service="userService"
-        :bulk-actions="bulkActionsConfig"
-        @bulk-delete="handleBulkDelete"
-        @bulk-change-active="handleBulkChangeActive"
-    >
-
-        <template #name="{ value }">
-            <div class="d-flex align-items-center">
-                <div class="avatar-sm img-thumbnail rounded-circle flex-shrink-0">
-                    <img
-                        v-if="value.avatar"
-                        :src="`${env.url}${value.avatar}`"
-                        alt=""
-                        class="member-img img-fluid d-block rounded-circle"
-                    >
-                    <div
-                        v-else
-                        class="avatar-title border bg-light text-primary rounded-circle text-uppercase"
-                    >
-                        {{ userService.generateNickname(value.name) }}
-                    </div>
-                </div>
-
-                <div class="ms-2 name">
-                    <div class="fw-bold">
-                        {{ value.name }}
-                    </div>
-                    <div class="text-muted fs-12">
-                        {{ value?.position?.name }}
-                    </div>
-                </div>
-            </div>
-        </template>
-
-        <!-- Template para status do usuário -->
-        <template #change_active="{ value }">
-            <ChangeStatus
-                :value="value"
-                :endpoint="endpoint"
-            />
-        </template>
-
-        <!-- Template para coluna telefone -->
-        <template #phone="{ value }">
-            <span>{{ value.phone ? maskPhone(value.phone) : '' }}</span>
-        </template>
-
-        <!-- Template para ações -->
-        <template #actions="{ value }">
-            <Actions
-                :types="actionTypes"
-                :value="value"
-                :endpoint="endpoint"
-                :session="session"
-                @set-form-data="goToEdit"
-                @deleted="crudRef?.loadList()"
-            />
-        </template>
-
-    </Crud>
+        @set-form-data="goToEdit"
+        @deleted="crudRef?.loadList()"
+      />
+    </template>
+  </Crud>
 </template>
 
 <script setup>

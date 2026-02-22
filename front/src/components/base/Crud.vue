@@ -1,276 +1,283 @@
 <template>
-    <Main>
-        <PageHeader :title="titleHeader || titlePluralize"/>
+  <Main>
+    <PageHeader :title="titleHeader || titlePluralize" />
 
-        <!-- Slot para conteudo antes do card principal (ex: stats) -->
-        <slot name="before-card"></slot>
+    <!-- Slot para conteudo antes do card principal (ex: stats) -->
+    <slot name="before-card" />
 
-        <BRow>
-            <BCol xxl="12" class="mb-3">
+    <BRow>
+      <BCol
+        xxl="12"
+        class="mb-3"
+      >
+        <BCard
+          no-body
+          class="mb-3"
+        >
+          <!-- Componente de filtro -->
+          <Filter
+            :session="session"
+            :title="title"
+            :url="url"
+            :filter="filter"
+            :title-pluralize="titlePluralize"
+            :endpoint="endpoint"
+            :views="views"
+            :hide-add-button="hideAddButton"
+            @new-view="changeViewType"
+            @filter-applied="loadList"
+          />
 
+          <!-- Barra de ações em massa -->
+          <BulkActions
+            v-if="bulkActions.enabled"
+            :selected-count="selectedIds.length"
+            :show-delete-action="bulkActions.showDelete"
+            :show-active-actions="bulkActions.showActive"
+            :show-status-actions="bulkActions.showStatus"
+            :status-options="bulkActions.statusOptions"
+            @delete="handleBulkDelete"
+            @change-active="handleBulkChangeActive"
+            @change-status="handleBulkChangeStatus"
+            @clear-selection="clearSelection"
+          />
 
-                <BCard
-                    no-body
-                    class="mb-3"
+          <div v-if="viewType === 'table'">
+            <!-- Visualização em tabela usando BTable -->
+            <BCardBody class="position-relative p-0">
+              <!-- Skeleton Loading -->
+              <div
+                v-if="loading && listAll.length === 0"
+                class="skeleton-container"
+              >
+                <table class="table table-striped mb-0">
+                  <thead>
+                    <tr>
+                      <th
+                        v-for="field in fields"
+                        :key="'skeleton-th-' + field.key"
+                        class="skeleton-th"
+                      >
+                        <div
+                          class="skeleton skeleton-text"
+                          style="width: 80%;"
+                        />
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr
+                      v-for="i in 5"
+                      :key="'skeleton-row-' + i"
+                      class="skeleton-row"
+                      :style="{ animationDelay: `${i * 0.1}s` }"
+                    >
+                      <td
+                        v-for="(field, j) in fields"
+                        :key="'skeleton-td-' + i + '-' + j"
+                      >
+                        <div
+                          class="skeleton skeleton-text"
+                          :style="{ width: getSkeletonWidth(field.key) }"
+                        />
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Tabela com dados -->
+              <TransitionGroup
+                v-else
+                name="table-rows"
+                tag="div"
+                class="table-sticky-container"
+              >
+                <BTable
+                  id="crud-table"
+                  key="data-table"
+                  :items="listAll"
+                  :fields="fields"
+                  striped
+                  hover
+                  show-empty
+                  :class="['align-middle', 'mb-0', 'p-0', { 'table-loading': loading }]"
+                  :tbody-tr-class="getRowClass"
                 >
-                    <!-- Componente de filtro -->
-                    <Filter
-                        :session="session"
-                        :title="title"
-                        :url="url"
-                        :filter="filter"
-                        :title-pluralize="titlePluralize"
-                        :endpoint="endpoint"
-                        :views="views"
-                        :hide-add-button="hideAddButton"
-                        @new-view="changeViewType"
-                        @filter-applied="loadList"
-                    />
-
-                    <!-- Barra de ações em massa -->
-                    <BulkActions
-                        v-if="bulkActions.enabled"
-                        :selected-count="selectedIds.length"
-                        :show-delete-action="bulkActions.showDelete"
-                        :show-active-actions="bulkActions.showActive"
-                        :show-status-actions="bulkActions.showStatus"
-                        :status-options="bulkActions.statusOptions"
-                        @delete="handleBulkDelete"
-                        @change-active="handleBulkChangeActive"
-                        @change-status="handleBulkChangeStatus"
-                        @clear-selection="clearSelection"
-                    />
-
-                    <div v-if="viewType === 'table'">
-                        <!-- Visualização em tabela usando BTable -->
-                        <BCardBody class="position-relative p-0">
-                            <!-- Skeleton Loading -->
-                            <div
-                                v-if="loading && listAll.length === 0"
-                                class="skeleton-container"
-                            >
-                                <table class="table table-striped mb-0">
-                                    <thead>
-                                    <tr>
-                                        <th
-                                            v-for="field in fields"
-                                            :key="'skeleton-th-' + field.key"
-                                            class="skeleton-th"
-                                        >
-                                            <div
-                                                class="skeleton skeleton-text"
-                                                style="width: 80%;"
-                                            />
-                                        </th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr
-                                        v-for="i in 5"
-                                        :key="'skeleton-row-' + i"
-                                        class="skeleton-row"
-                                        :style="{ animationDelay: `${i * 0.1}s` }"
-                                    >
-                                        <td
-                                            v-for="(field, j) in fields"
-                                            :key="'skeleton-td-' + i + '-' + j"
-                                        >
-                                            <div
-                                                class="skeleton skeleton-text"
-                                                :style="{ width: getSkeletonWidth(field.key) }"
-                                            />
-                                        </td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-
-                            <!-- Tabela com dados -->
-                            <TransitionGroup
-                                v-else
-                                name="table-rows"
-                                tag="div"
-                                class="table-sticky-container"
-                            >
-                                <BTable
-                                    id="crud-table"
-                                    key="data-table"
-                                    :items="listAll"
-                                    :fields="fields"
-                                    striped
-                                    hover
-                                    show-empty
-                                    :class="['align-middle', 'mb-0', 'p-0', { 'table-loading': loading }]"
-                                    :tbody-tr-class="getRowClass"
-                                >
-                                    <!-- Empty state customizado -->
-                                    <template #empty>
-                                        <div class="empty-state">
-                                            <div class="empty-state-icon">
-                                                <i class="ri-inbox-line"/>
-                                            </div>
-                                            <h5 class="empty-state-title">Nenhum registro encontrado</h5>
-                                            <p class="empty-state-text">
-                                                Não há dados para exibir no momento.
-                                                <br>
-                                                Tente ajustar os filtros ou adicione um novo registro.
-                                            </p>
-                                            <router-link
-                                                v-if="canCreate"
-                                                :to="`/${url}/cadastrar`"
-                                                class="btn btn-primary btn-sm"
-                                            >
-                                                <i class="ri-add-line me-1"/>
-                                                Adicionar {{ title }}
-                                            </router-link>
-                                        </div>
-                                    </template>
-
-                                    <!-- Header customizado com SortableHeader -->
-                                    <template
-                                        v-for="field in fields"
-                                        :key="'head-' + field.key"
-                                        #[`head(${field.key})`]="data"
-                                    >
-                                        <!-- Checkbox para seleção -->
-                                        <template v-if="field.key === 'check'">
-                                            <input
-                                                id="selectAll"
-                                                type="checkbox"
-                                                class="form-check-input"
-                                                @change="selectAll"
-                                            >
-                                        </template>
-
-                                        <!-- Header com ordenação -->
-                                        <template v-else-if="field.sortable">
-                                            <SortableHeader
-                                                :label="field.label"
-                                                :column="field.orderKey"
-                                                :sort-by="order_by"
-                                                :sort-desc="order === 'desc'"
-                                                :loading="loading"
-                                                @sort="handleSort"
-                                            />
-                                        </template>
-
-                                        <!-- Header simples -->
-                                        <template v-else>
-                                            {{ field.label }}
-                                        </template>
-                                    </template>
-
-                                    <!-- Celula de checkbox para selecao -->
-                                    <template #cell(check)="{ item }">
-                                        <input
-                                            type="checkbox"
-                                            class="form-check-input"
-                                            :checked="selectedIds.includes(item.id)"
-                                            @change="toggleSelection(item.id)"
-                                        >
-                                    </template>
-
-                                    <!-- Células customizadas via slots dinâmicos (exceto check que tem template próprio) -->
-                                    <template
-                                        v-for="key in keys.filter(k => k !== 'check')"
-                                        :key="'cell-' + key"
-                                        #[`cell(${key})`]="{ item }"
-                                    >
-                                        <slot
-                                            :name="key"
-                                            :value="item"
-                                        >
-                                            {{ getNestedValue(item, key) }}
-                                        </slot>
-                                    </template>
-                                </BTable>
-                            </TransitionGroup>
-
-                            <!-- Loading overlay para recarregamento -->
-                            <Transition name="fade">
-                                <div
-                                    v-if="loading && listAll.length > 0"
-                                    class="table-loading-overlay"
-                                >
-                                    <div class="loading-content">
-                                        <BSpinner
-                                            variant="primary"
-                                            style="width: 2.5rem; height: 2.5rem;"
-                                        />
-                                        <p class="loading-text">Atualizando...</p>
-                                    </div>
-                                </div>
-                            </Transition>
-                        </BCardBody>
-
-                        <!-- Footer com paginação -->
-                        <BCardFooter class="border-top-0">
-                            <div class="align-items-center mt-xl-3 justify-content-between d-lg-flex">
-                                <!-- Seletor de registros por página -->
-                                <div class="align-items-center d-flex text-muted mb-2 mb-lg-0">
-                                    <div class="me-2">
-                                        <span>Exibir</span>
-                                    </div>
-                                    <div class="col-auto">
-                                        <BFormSelect
-                                            id="limitFilter"
-                                            v-model="limit"
-                                            :options="perPageOptions"
-                                            size="sm"
-                                            @update:model-value="setLimit"
-                                        />
-                                    </div>
-                                    <div class="ms-2">
-                                        <span>registros</span>
-                                    </div>
-                                </div>
-
-                                <!-- Info de registros -->
-                                <div class="flex-shrink-0 me-lg-auto ms-lg-4 mb-2 mb-lg-0">
-                                    <div
-                                        v-if="total > 0"
-                                        class="text-muted"
-                                    >
-                                        Exibindo de
-                                        <span class="fw-semibold">{{ start }}</span>
-                                        a
-                                        <span class="fw-semibold">{{ partial }}</span>
-                                        de
-                                        <span class="fw-semibold">{{ total }}</span>
-                                        resultados
-                                    </div>
-                                    <div
-                                        v-else
-                                        class="text-muted"
-                                    >
-                                        Nenhum resultado
-                                    </div>
-                                </div>
-
-                                <!-- Paginação com BPagination -->
-                                <div class="pagination-wrapper">
-                                    <BPagination
-                                        v-if="pages > 1"
-                                        v-model="page"
-                                        :total-rows="total"
-                                        :per-page="limit"
-                                        class="mb-0 gap-1 gap-lg-2"
-                                        @update:model-value="handlePageChange"
-                                    />
-                                </div>
-                            </div>
-                        </BCardFooter>
+                  <!-- Empty state customizado -->
+                  <template #empty>
+                    <div class="empty-state">
+                      <div class="empty-state-icon">
+                        <i class="ri-inbox-line" />
+                      </div>
+                      <h5 class="empty-state-title">
+                        Nenhum registro encontrado
+                      </h5>
+                      <p class="empty-state-text">
+                        Não há dados para exibir no momento.
+                        <br>
+                        Tente ajustar os filtros ou adicione um novo registro.
+                      </p>
+                      <router-link
+                        v-if="canCreate"
+                        :to="`/${url}/cadastrar`"
+                        class="btn btn-primary btn-sm"
+                      >
+                        <i class="ri-add-line me-1" />
+                        Adicionar {{ title }}
+                      </router-link>
                     </div>
-                </BCard>
+                  </template>
 
-                <!-- Slot para visualização em cards -->
-                <slot
-                    v-if="viewType === 'card'"
-                    name="cards"
-                />
-            </BCol>
-        </BRow>
-    </Main>
+                  <!-- Header customizado com SortableHeader -->
+                  <!-- eslint-disable vue/no-unused-vars -->
+                  <template
+                    v-for="field in fields"
+                    :key="'head-' + field.key"
+                    #[`head(${field.key})`]="_data"
+                  >
+                    <!-- eslint-enable vue/no-unused-vars -->
+                    <!-- Checkbox para seleção -->
+                    <template v-if="field.key === 'check'">
+                      <input
+                        id="selectAll"
+                        type="checkbox"
+                        class="form-check-input"
+                        @change="selectAll"
+                      >
+                    </template>
+
+                    <!-- Header com ordenação -->
+                    <template v-else-if="field.sortable">
+                      <SortableHeader
+                        :label="field.label"
+                        :column="field.orderKey"
+                        :sort-by="order_by"
+                        :sort-desc="order === 'desc'"
+                        :loading="loading"
+                        @sort="handleSort"
+                      />
+                    </template>
+
+                    <!-- Header simples -->
+                    <template v-else>
+                      {{ field.label }}
+                    </template>
+                  </template>
+
+                  <!-- Celula de checkbox para selecao -->
+                  <template #cell(check)="{ item }">
+                    <input
+                      type="checkbox"
+                      class="form-check-input"
+                      :checked="selectedIds.includes(item.id)"
+                      @change="toggleSelection(item.id)"
+                    >
+                  </template>
+
+                  <!-- Células customizadas via slots dinâmicos (exceto check que tem template próprio) -->
+                  <template
+                    v-for="key in keys.filter(k => k !== 'check')"
+                    :key="'cell-' + key"
+                    #[`cell(${key})`]="{ item }"
+                  >
+                    <slot
+                      :name="key"
+                      :value="item"
+                    >
+                      {{ getNestedValue(item, key) }}
+                    </slot>
+                  </template>
+                </BTable>
+              </TransitionGroup>
+
+              <!-- Loading overlay para recarregamento -->
+              <Transition name="fade">
+                <div
+                  v-if="loading && listAll.length > 0"
+                  class="table-loading-overlay"
+                >
+                  <div class="loading-content">
+                    <BSpinner
+                      variant="primary"
+                      style="width: 2.5rem; height: 2.5rem;"
+                    />
+                    <p class="loading-text">
+                      Atualizando...
+                    </p>
+                  </div>
+                </div>
+              </Transition>
+            </BCardBody>
+
+            <!-- Footer com paginação -->
+            <BCardFooter class="border-top-0">
+              <div class="align-items-center mt-xl-3 justify-content-between d-lg-flex">
+                <!-- Seletor de registros por página -->
+                <div class="align-items-center d-flex text-muted mb-2 mb-lg-0">
+                  <div class="me-2">
+                    <span>Exibir</span>
+                  </div>
+                  <div class="col-auto">
+                    <BFormSelect
+                      id="limitFilter"
+                      v-model="limit"
+                      :options="perPageOptions"
+                      size="sm"
+                      @update:model-value="setLimit"
+                    />
+                  </div>
+                  <div class="ms-2">
+                    <span>registros</span>
+                  </div>
+                </div>
+
+                <!-- Info de registros -->
+                <div class="flex-shrink-0 me-lg-auto ms-lg-4 mb-2 mb-lg-0">
+                  <div
+                    v-if="total > 0"
+                    class="text-muted"
+                  >
+                    Exibindo de
+                    <span class="fw-semibold">{{ start }}</span>
+                    a
+                    <span class="fw-semibold">{{ partial }}</span>
+                    de
+                    <span class="fw-semibold">{{ total }}</span>
+                    resultados
+                  </div>
+                  <div
+                    v-else
+                    class="text-muted"
+                  >
+                    Nenhum resultado
+                  </div>
+                </div>
+
+                <!-- Paginação com BPagination -->
+                <div class="pagination-wrapper">
+                  <BPagination
+                    v-if="pages > 1"
+                    v-model="page"
+                    :total-rows="total"
+                    :per-page="limit"
+                    class="mb-0 gap-1 gap-lg-2"
+                    @update:model-value="handlePageChange"
+                  />
+                </div>
+              </div>
+            </BCardFooter>
+          </div>
+        </BCard>
+
+        <!-- Slot para visualização em cards -->
+        <slot
+          v-if="viewType === 'card'"
+          name="cards"
+        />
+      </BCol>
+    </BRow>
+  </Main>
 </template>
 
 <script setup>

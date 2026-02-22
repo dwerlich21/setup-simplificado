@@ -7,8 +7,8 @@ import {usePermissions} from "@/utils/permissions.js";
 
 // Props recebidas
 const props = defineProps({
-    value: Object,
-    endpoint: String,
+    value: { type: Object, default: () => ({}) },
+    endpoint: { type: String, default: '' },
 });
 
 // Converte para boolean corretamente (trata string "0", "1", number e boolean)
@@ -57,26 +57,26 @@ const changeStatus = () => {
 </script>
 
 <template>
-    <!-- Com permissão: clicável -->
-    <span
-        v-if="hasPermission"
-        class="pointer fs-14 badge"
-        :class="status ? 'bg-success-subtle' : 'bg-danger-subtle'"
-        @click.prevent="changeStatus"
-    >
-        <span v-if="load">{{ status ? 'Ativo' : 'Inativo' }}</span>
-        <BSpinner
-            v-else
-            style="height: 1rem; width: 1rem;"
-        />
-    </span>
+  <!-- Com permissão: clicável -->
+  <span
+    v-if="hasPermission"
+    class="pointer fs-14 badge"
+    :class="status ? 'bg-success-subtle' : 'bg-danger-subtle'"
+    @click.prevent="changeStatus"
+  >
+    <span v-if="load">{{ status ? 'Ativo' : 'Inativo' }}</span>
+    <BSpinner
+      v-else
+      style="height: 1rem; width: 1rem;"
+    />
+  </span>
 
-    <!-- Sem permissão: apenas visual -->
-    <span
-        v-else
-        class="fs-14 badge"
-        :class="status ? 'bg-success-subtle' : 'bg-danger-subtle'"
-    >
-        {{ status ? 'Ativo' : 'Inativo' }}
-    </span>
+  <!-- Sem permissão: apenas visual -->
+  <span
+    v-else
+    class="fs-14 badge"
+    :class="status ? 'bg-success-subtle' : 'bg-danger-subtle'"
+  >
+    {{ status ? 'Ativo' : 'Inativo' }}
+  </span>
 </template>

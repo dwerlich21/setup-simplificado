@@ -1,8 +1,6 @@
 <script setup>
 import {onMounted} from 'vue';
 import {useRoute} from 'vue-router';
-import env from '@/env';
-
 const route = useRoute();
 
 // Methods
@@ -162,79 +160,84 @@ watch(route, (newRoute) => {
 </script>
 
 <template>
-    <b-container fluid>
-        <ul
-            id="navbar-nav"
-            class="navbar-nav h-100"
+  <b-container fluid>
+    <ul
+      id="navbar-nav"
+      class="navbar-nav h-100"
+    >
+      <li
+        v-permission="'dashboard.index'"
+        class="nav-item"
+      >
+        <router-link
+          class="nav-link menu-link"
+          to="/"
         >
-            <li v-permission="'dashboard.index'" class="nav-item">
-                <router-link
-                    class="nav-link menu-link"
-                    to="/"
-                >
-                    <i class="mdi mdi-speedometer"/>
-                    <span>Dashboard</span>
-                </router-link>
-            </li>
+          <i class="mdi mdi-speedometer" />
+          <span>Dashboard</span>
+        </router-link>
+      </li>
 
+      <li
+        v-permission="['users.index', 'audit-logs.index']"
+        class="nav-item"
+      >
+        <a
+          class="nav-link menu-link"
+          href="#managementSection"
+          data-bs-toggle="collapse"
+          role="button"
+          aria-expanded="false"
+          aria-controls="managementSection"
+        >
+          <i class="mdi mdi-cogs" />
+          <span>Gerenciar</span>
+        </a>
+        <div
+          id="managementSection"
+          class="collapse menu-dropdown"
+        >
+          <ul class="nav nav-sm flex-column">
             <li
-                v-permission="['users.index', 'audit-logs.index']"
-                class="nav-item"
+              v-permission="'users.index'"
+              class="nav-item"
             >
-                <a
-                    class="nav-link menu-link"
-                    href="#managementSection"
-                    data-bs-toggle="collapse"
-                    role="button"
-                    aria-expanded="false"
-                    aria-controls="managementSection"
-                >
-                    <i class="mdi mdi-cogs"/>
-                    <span>Gerenciar</span>
-                </a>
-                <div
-                    id="managementSection"
-                    class="collapse menu-dropdown"
-                >
-                    <ul class="nav nav-sm flex-column">
-                        <li
-                            v-permission="'users.index'"
-                            class="nav-item"
-                        >
-                            <router-link
-                                to="/usuarios"
-                                class="nav-link custom-abc"
-                            >
-                                Usuários
-                            </router-link>
-                        </li>
-                        <li
-                            v-permission="'audit-logs.index'"
-                            class="nav-item"
-                        >
-                            <router-link
-                                to="/audit-logs"
-                                class="nav-link"
-                            >
-                                Logs de Auditoria
-                            </router-link>
-                        </li>
-                    </ul>
-                </div>
+              <router-link
+                to="/usuarios"
+                class="nav-link custom-abc"
+              >
+                Usuários
+              </router-link>
             </li>
-
-            <li v-permission="'notifications.index'" class="nav-item">
-                <router-link
-                    class="nav-link menu-link"
-                    to="/notificacoes"
-                >
-                    <i class="mdi mdi-bell-outline"/>
-                    <span>Notificações</span>
-                </router-link>
+            <li
+              v-permission="'audit-logs.index'"
+              class="nav-item"
+            >
+              <router-link
+                to="/audit-logs"
+                class="nav-link"
+              >
+                Logs de Auditoria
+              </router-link>
             </li>
+          </ul>
+        </div>
+      </li>
 
-        </ul>
-    </b-container>
+      <li
+        v-permission="'notifications.index'"
+        class="nav-item"
+      >
+        <router-link
+          class="nav-link menu-link"
+          to="/notificacoes"
+        >
+          <i class="mdi mdi-bell-outline" />
+          <span>Notificações</span>
+        </router-link>
+      </li>
+    </ul>
+  </b-container>
 </template>
 
 <style>

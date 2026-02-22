@@ -25,10 +25,12 @@ defineProps({
     icon: {
         type: String,
         required: false,
+        default: ''
     },
     label: {
         type: String,
         required: false,
+        default: ''
     },
     addClass: {
         type: Array,

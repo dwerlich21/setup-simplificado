@@ -66,34 +66,34 @@ const delElement = async () => {
 </script>
 
 <template>
-    <span>
-        <slot name="add-icons"/>
+  <span>
+    <slot name="add-icons" />
 
-        <!-- Editar via modal -->
-        <i
-            v-if="props.types.indexOf('modal') > -1 && canEdit"
-            v-b-tooltip.hover="'Editar Registro'"
-            class="bx bx-pencil text-info fs-14 mx-1 pointer"
-            @click="getView(props.value.id)"
-        />
+    <!-- Editar via modal -->
+    <i
+      v-if="props.types.indexOf('modal') > -1 && canEdit"
+      v-b-tooltip.hover="'Editar Registro'"
+      class="bx bx-pencil text-info fs-14 mx-1 pointer"
+      @click="getView(props.value.id)"
+    />
 
-        <!-- Editar via página -->
-        <router-link
-            v-if="props.types.indexOf('page') > -1 && canEdit"
-            :to="{ name: `${endpoint.replace('/','')}-form` , params: { id: encodeId(props.value.id) }}"
-        >
-            <i
-                v-b-tooltip.hover="'Editar Registro'"
-                class="bx bx-pencil text-info fs-14 mx-1 pointer"
-            />
-        </router-link>
+    <!-- Editar via página -->
+    <router-link
+      v-if="props.types.indexOf('page') > -1 && canEdit"
+      :to="{ name: `${endpoint.replace('/','')}-form` , params: { id: encodeId(props.value.id) }}"
+    >
+      <i
+        v-b-tooltip.hover="'Editar Registro'"
+        class="bx bx-pencil text-info fs-14 mx-1 pointer"
+      />
+    </router-link>
 
-        <!-- Excluir -->
-        <i
-            v-if="props.types.indexOf('delete') > -1 && canDelete"
-            v-b-tooltip.hover="'Excluir Registro'"
-            class="bx bx-trash text-danger fs-14 mx-1 pointer"
-            @click="delElement"
-        />
-    </span>
+    <!-- Excluir -->
+    <i
+      v-if="props.types.indexOf('delete') > -1 && canDelete"
+      v-b-tooltip.hover="'Excluir Registro'"
+      class="bx bx-trash text-danger fs-14 mx-1 pointer"
+      @click="delElement"
+    />
+  </span>
 </template>

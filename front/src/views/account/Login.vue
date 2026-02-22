@@ -9,7 +9,6 @@ import {endLoading} from "@/composables/spinners";
 // Data
 const email = ref('');
 const password = ref('');
-const forgot_password = ref(false);
 const load = ref(false);
 const authStore = useAuthStore();
 
@@ -19,7 +18,7 @@ const login = async () => {
     const api = env.api + "login";
 
     try {
-        const response = await http.post(api, {
+        await http.post(api, {
             email: email.value,
             password: password.value,
         });
@@ -57,147 +56,144 @@ onMounted(() => {
 </script>
 
 <template>
-    <div class="auth-page-wrapper pt-5">
-        <div
-            class="auth-one-bg-position auth-one-bg bg-soft-primary"
-            id="auth-particles"
-        >
+  <div class="auth-page-wrapper pt-5">
+    <div
+      id="auth-particles"
+      class="auth-one-bg-position auth-one-bg bg-soft-primary"
+    />
 
-        </div>
+    <div class="auth-page-content">
+      <b-container>
+        <b-row class="justify-content-center">
+          <b-col
+            md="8"
+            lg="6"
+            xl="5"
+          >
+            <b-card no-body>
+              <b-card-body class="p-4">
+                <div class="text-center">
+                  <img
+                    src="@/assets/logos/logo-light.png"
+                    alt="logo_libertas"
+                    height="50"
+                  >
+                  <h5 class="mt-3">
+                    Seja bem Vindo!
+                  </h5>
+                  <p class="text-muted">
+                    Faça login para continuar.
+                  </p>
+                </div>
+                <div class="p-2 mt-4">
+                  <form @submit.prevent="login">
+                    <div class="mb-3">
+                      <label
+                        for="email"
+                        class="form-label"
+                      >Email
+                      </label>
+                      <input
+                        id="email"
+                        v-model="email"
+                        type="email"
+                        class="form-control"
+                        placeholder="Email de acesso"
+                      >
+                      <div class="invalid-feedback">
+                        <span />
+                      </div>
+                    </div>
 
-        <div class="auth-page-content">
-            <b-container>
+                    <div>
+                      <label
+                        class="form-label"
+                        for="password-input"
+                      >Senha
+                      </label>
+                      <div class="position-relative auth-pass-inputgroup mb-3">
+                        <input
+                          id="password-input"
+                          v-model="password"
+                          type="password"
+                          class="form-control pe-5"
+                          placeholder="Digite a Senha"
+                        >
+                        <b-button
+                          id="password-addon"
+                          variant="link"
+                          class="position-absolute end-0 top-0 text-decoration-none text-muted"
+                          type="button"
+                          @click="showPass"
+                        >
+                          <i
+                            id="icon-button"
+                            class="ri-eye-fill align-middle"
+                          />
+                        </b-button>
+                      </div>
+                    </div>
 
-                <b-row class="justify-content-center">
-                    <b-col
-                        md="8"
-                        lg="6"
-                        xl="5"
-                    >
-                        <b-card no-body>
-                            <b-card-body class="p-4">
-                                <div class="text-center">
-                                    <img
-                                        src="@/assets/logos/logo-light.png"
-                                        alt="logo_libertas"
-                                        height="50"
-                                    >
-                                    <h5 class="mt-3">Seja bem Vindo!</h5>
-                                    <p class="text-muted">Faça login para continuar.</p>
-                                </div>
-                                <div class="p-2 mt-4">
+                    <div class="mb-3 text-end">
+                      <router-link to="/esqueceu-senha">
+                        Esqueceu a senha?
+                      </router-link>
+                    </div>
 
-                                    <form @submit.prevent="login">
-                                        <div class="mb-3">
-                                            <label
-                                                for="email"
-                                                class="form-label"
-                                            >Email
-                                            </label>
-                                            <input
-                                                type="email"
-                                                class="form-control"
-                                                id="email"
-                                                placeholder="Email de acesso"
-                                                v-model="email"
-                                            />
-                                            <div class="invalid-feedback">
-                                                <span></span>
-                                            </div>
-                                        </div>
-
-                                        <div>
-                                            <label
-                                                class="form-label"
-                                                for="password-input"
-                                            >Senha
-                                            </label>
-                                            <div class="position-relative auth-pass-inputgroup mb-3">
-                                                <input
-                                                    type="password"
-                                                    v-model="password"
-                                                    class="form-control pe-5"
-                                                    placeholder="Digite a Senha"
-                                                    id="password-input"
-                                                />
-                                                <b-button
-                                                    variant="link"
-                                                    @click="showPass"
-                                                    class="position-absolute end-0 top-0 text-decoration-none text-muted"
-                                                    type="button"
-                                                    id="password-addon"
-                                                >
-                                                    <i
-                                                        class="ri-eye-fill align-middle"
-                                                        id="icon-button"
-                                                    ></i>
-                                                </b-button>
-                                            </div>
-                                        </div>
-
-                                        <div class="mb-3 text-end">
-                                            <router-link to="/esqueceu-senha">
-                                                Esqueceu a senha?
-                                            </router-link>
-                                        </div>
-
-                                        <div class="mt-4">
-                                            <b-button
-                                                variant="soft-primary"
-                                                class="w-100 btn-load"
-                                                type="submit"
-                                            >
-                                                <span class="d-flex align-items-center margin-load">
-                                                    <span
-                                                        class="flex-grow-1"
-                                                        v-if="!load"
-                                                    >
-                                                        Login
-                                                    </span>
-                                                    <span
-                                                        v-else
-                                                        class="spinner-border flex-shrink-0"
-                                                        role="status"
-                                                    >
-                                                        <span class="visually-hidden"></span>
-                                                    </span>
-                                                </span>
-                                            </b-button>
-                                        </div>
-                                    </form>
-                                </div>
-
-                            </b-card-body>
-
-                        </b-card>
-
-                    </b-col>
-                </b-row>
-            </b-container>
-        </div>
-
-        <footer class="footer">
-            <b-container>
-                <b-row>
-                    <b-col lg="12">
-                        <div class="text-center">
-                            <p class="mb-0 text-muted">
-                                &copy; {{ new Date().getFullYear() }}
-                                <a
-                                    target="_blank"
-                                    class="text-primary"
-                                    href="https://lifecode.dev/"
-                                >LifeCode.
-                                </a>
-                                Feito com o
-                                <i class="mdi mdi-heart text-danger"></i>
-                            </p>
-                        </div>
-                    </b-col>
-                </b-row>
-            </b-container>
-        </footer>
+                    <div class="mt-4">
+                      <b-button
+                        variant="soft-primary"
+                        class="w-100 btn-load"
+                        type="submit"
+                      >
+                        <span class="d-flex align-items-center margin-load">
+                          <span
+                            v-if="!load"
+                            class="flex-grow-1"
+                          >
+                            Login
+                          </span>
+                          <span
+                            v-else
+                            class="spinner-border flex-shrink-0"
+                            role="status"
+                          >
+                            <span class="visually-hidden" />
+                          </span>
+                        </span>
+                      </b-button>
+                    </div>
+                  </form>
+                </div>
+              </b-card-body>
+            </b-card>
+          </b-col>
+        </b-row>
+      </b-container>
     </div>
+
+    <footer class="footer">
+      <b-container>
+        <b-row>
+          <b-col lg="12">
+            <div class="text-center">
+              <p class="mb-0 text-muted">
+                &copy; {{ new Date().getFullYear() }}
+                <a
+                  target="_blank"
+                  class="text-primary"
+                  href="https://lifecode.dev/"
+                >LifeCode.
+                </a>
+                Feito com o
+                <i class="mdi mdi-heart text-danger" />
+              </p>
+            </div>
+          </b-col>
+        </b-row>
+      </b-container>
+    </footer>
+  </div>
 </template>
 
 <style>

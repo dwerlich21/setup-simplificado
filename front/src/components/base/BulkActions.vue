@@ -1,76 +1,75 @@
 <template>
-    <Transition name="slide-up">
-        <div
-            v-if="selectedCount > 0"
-            class="bulk-actions-bar"
-        >
-            <div class="d-flex align-items-center justify-content-between">
-                <div class="d-flex align-items-center">
-                    <span class="badge bg-primary me-2">{{ selectedCount }}</span>
-                    <span class="text-muted">
-                        {{ selectedCount === 1 ? 'item selecionado' : 'itens selecionados' }}
-                    </span>
-                </div>
-
-                <div class="d-flex align-items-center gap-2">
-                    <!-- Slot para ações customizadas -->
-                    <slot name="actions"></slot>
-
-                    <!-- Ações padrao -->
-                    <b-dropdown
-                        v-if="showStatusActions"
-                        variant="soft-info"
-                        size="sm"
-                        text="Alterar Status"
-                    >
-                        <b-dropdown-item
-                            v-for="status in statusOptions"
-                            :key="status.value"
-                            @click="$emit('change-status', status.value)"
-                        >
-                            <i :class="[status.icon, 'me-2']"></i>
-                            {{ status.label }}
-                        </b-dropdown-item>
-                    </b-dropdown>
-
-                    <b-dropdown
-                        v-if="showActiveActions"
-                        variant="soft-warning"
-                        size="sm"
-                        text="Ativar/Desativar"
-                    >
-                        <b-dropdown-item @click="$emit('change-active', true)">
-                            <i class="ri-checkbox-circle-line me-2 text-success"></i>
-                            Ativar selecionados
-                        </b-dropdown-item>
-                        <b-dropdown-item @click="$emit('change-active', false)">
-                            <i class="ri-close-circle-line me-2 text-danger"></i>
-                            Desativar selecionados
-                        </b-dropdown-item>
-                    </b-dropdown>
-
-                    <b-button
-                        v-if="showDeleteAction"
-                        variant="soft-danger"
-                        size="sm"
-                        @click="confirmDelete"
-                    >
-                        <i class="ri-delete-bin-line me-1"></i>
-                        Excluir
-                    </b-button>
-
-                    <b-button
-                        variant="light"
-                        size="sm"
-                        @click="$emit('clear-selection')"
-                    >
-                        <i class="ri-close-line"></i>
-                    </b-button>
-                </div>
-            </div>
+  <Transition name="slide-up">
+    <div
+      v-if="selectedCount > 0"
+      class="bulk-actions-bar"
+    >
+      <div class="d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center">
+          <span class="badge bg-primary me-2">{{ selectedCount }}</span>
+          <span class="text-muted">
+            {{ selectedCount === 1 ? 'item selecionado' : 'itens selecionados' }}
+          </span>
         </div>
-    </Transition>
 
+        <div class="d-flex align-items-center gap-2">
+          <!-- Slot para ações customizadas -->
+          <slot name="actions" />
+
+          <!-- Ações padrao -->
+          <b-dropdown
+            v-if="showStatusActions"
+            variant="soft-info"
+            size="sm"
+            text="Alterar Status"
+          >
+            <b-dropdown-item
+              v-for="status in statusOptions"
+              :key="status.value"
+              @click="$emit('change-status', status.value)"
+            >
+              <i :class="[status.icon, 'me-2']" />
+              {{ status.label }}
+            </b-dropdown-item>
+          </b-dropdown>
+
+          <b-dropdown
+            v-if="showActiveActions"
+            variant="soft-warning"
+            size="sm"
+            text="Ativar/Desativar"
+          >
+            <b-dropdown-item @click="$emit('change-active', true)">
+              <i class="ri-checkbox-circle-line me-2 text-success" />
+              Ativar selecionados
+            </b-dropdown-item>
+            <b-dropdown-item @click="$emit('change-active', false)">
+              <i class="ri-close-circle-line me-2 text-danger" />
+              Desativar selecionados
+            </b-dropdown-item>
+          </b-dropdown>
+
+          <b-button
+            v-if="showDeleteAction"
+            variant="soft-danger"
+            size="sm"
+            @click="confirmDelete"
+          >
+            <i class="ri-delete-bin-line me-1" />
+            Excluir
+          </b-button>
+
+          <b-button
+            variant="light"
+            size="sm"
+            @click="$emit('clear-selection')"
+          >
+            <i class="ri-close-line" />
+          </b-button>
+        </div>
+      </div>
+    </div>
+  </Transition>
 </template>
 
 <script setup>

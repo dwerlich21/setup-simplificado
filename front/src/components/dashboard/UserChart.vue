@@ -1,38 +1,53 @@
 <template>
-    <b-card no-body class="card-equal-height card-height-100">
-        <b-card-header class="align-items-center d-flex border-0">
-            <h6 class="card-title mb-0 flex-grow-1">Metas por Usuário</h6>
-        </b-card-header>
-        <b-card-body class="pt-0">
-            <div v-if="loading" class="d-flex justify-content-center align-items-center" style="height: 300px;">
-                <div class="spinner-border text-primary" role="status">
-                    <span class="visually-hidden">Carregando...</span>
-                </div>
-            </div>
-            <apexchart
-                v-else-if="chartOptions.series[0].data.length > 0"
-                type="bar"
-                height="300"
-                :options="chartOptions"
-                :series="chartOptions.series"
-            />
-            <div v-else class="d-flex flex-column justify-content-center align-items-center text-muted" style="height: 300px;">
-                <i class="ri-bar-chart-2-line fs-1 mb-2"></i>
-                <span>Sem dados para exibir</span>
-            </div>
-        </b-card-body>
-    </b-card>
+  <b-card
+    no-body
+    class="card-equal-height card-height-100"
+  >
+    <b-card-header class="align-items-center d-flex border-0">
+      <h6 class="card-title mb-0 flex-grow-1">
+        Metas por Usuário
+      </h6>
+    </b-card-header>
+    <b-card-body class="pt-0">
+      <div
+        v-if="loading"
+        class="d-flex justify-content-center align-items-center"
+        style="height: 300px;"
+      >
+        <div
+          class="spinner-border text-primary"
+          role="status"
+        >
+          <span class="visually-hidden">Carregando...</span>
+        </div>
+      </div>
+      <apexchart
+        v-else-if="chartOptions.series[0].data.length > 0"
+        type="bar"
+        height="300"
+        :options="chartOptions"
+        :series="chartOptions.series"
+      />
+      <div
+        v-else
+        class="d-flex flex-column justify-content-center align-items-center text-muted"
+        style="height: 300px;"
+      >
+        <i class="ri-bar-chart-2-line fs-1 mb-2" />
+        <span>Sem dados para exibir</span>
+      </div>
+    </b-card-body>
+  </b-card>
 </template>
 
 <script setup>
 import { ref, reactive, onMounted } from 'vue';
 import http from '@/http';
-import { getThemeColors, getChartColors } from '@/utils/themeColors';
+import { getChartColors } from '@/utils/themeColors';
 
 const loading = ref(true);
 
 // Get theme colors from CSS variables
-const themeColors = getThemeColors();
 const chartColors = getChartColors();
 
 const chartOptions = reactive({

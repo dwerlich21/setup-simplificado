@@ -1,27 +1,43 @@
 <template>
-    <b-card no-body class="card-equal-height">
-        <b-card-header class="align-items-center d-flex border-0">
-            <h6 class="card-title mb-0 flex-grow-1">Evolução Mensal</h6>
-        </b-card-header>
-        <b-card-body class="pt-0 px-0">
-            <div v-if="loading" class="d-flex justify-content-center align-items-center" style="height: 350px;">
-                <div class="spinner-border text-primary" role="status">
-                    <span class="visually-hidden">Carregando...</span>
-                </div>
-            </div>
-            <apexchart
-                v-else-if="chartOptions.series.length > 0"
-                type="area"
-                height="350"
-                :options="chartOptions"
-                :series="chartOptions.series"
-            />
-            <div v-else class="d-flex flex-column justify-content-center align-items-center text-muted" style="height: 350px;">
-                <i class="ri-line-chart-line fs-1 mb-2"></i>
-                <span>Sem dados para exibir</span>
-            </div>
-        </b-card-body>
-    </b-card>
+  <b-card
+    no-body
+    class="card-equal-height"
+  >
+    <b-card-header class="align-items-center d-flex border-0">
+      <h6 class="card-title mb-0 flex-grow-1">
+        Evolução Mensal
+      </h6>
+    </b-card-header>
+    <b-card-body class="pt-0 px-0">
+      <div
+        v-if="loading"
+        class="d-flex justify-content-center align-items-center"
+        style="height: 350px;"
+      >
+        <div
+          class="spinner-border text-primary"
+          role="status"
+        >
+          <span class="visually-hidden">Carregando...</span>
+        </div>
+      </div>
+      <apexchart
+        v-else-if="chartOptions.series.length > 0"
+        type="area"
+        height="350"
+        :options="chartOptions"
+        :series="chartOptions.series"
+      />
+      <div
+        v-else
+        class="d-flex flex-column justify-content-center align-items-center text-muted"
+        style="height: 350px;"
+      >
+        <i class="ri-line-chart-line fs-1 mb-2" />
+        <span>Sem dados para exibir</span>
+      </div>
+    </b-card-body>
+  </b-card>
 </template>
 <script setup>
 import { ref, reactive, onMounted } from 'vue';

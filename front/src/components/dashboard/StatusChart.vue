@@ -93,34 +93,50 @@ onMounted(() => {
 </script>
 
 <template>
-    <b-card no-body class="card-equal-height card-height-100">
-        <b-card-header class="align-items-center d-flex border-0">
-            <h6 class="card-title mb-0 flex-grow-1">Metas por Status</h6>
-            <div class="flex-shrink-0">
-                <span class="badge bg-primary-subtle text-primary fs-12">
-                    {{ total }} total
-                </span>
-            </div>
-        </b-card-header>
-        <b-card-body class="pt-0">
-            <div v-if="loading" class="d-flex justify-content-center align-items-center" style="height: 300px;">
-                <div class="spinner-border text-primary" role="status">
-                    <span class="visually-hidden">Carregando...</span>
-                </div>
-            </div>
-            <apexchart
-                v-else-if="chartOptions.series.length > 0"
-                type="donut"
-                height="300"
-                :options="chartOptions"
-                :series="chartOptions.series"
-            />
-            <div v-else class="d-flex flex-column justify-content-center align-items-center text-muted" style="height: 300px;">
-                <i class="ri-pie-chart-line fs-1 mb-2"></i>
-                <span>Sem dados para exibir</span>
-            </div>
-        </b-card-body>
-    </b-card>
+  <b-card
+    no-body
+    class="card-equal-height card-height-100"
+  >
+    <b-card-header class="align-items-center d-flex border-0">
+      <h6 class="card-title mb-0 flex-grow-1">
+        Metas por Status
+      </h6>
+      <div class="flex-shrink-0">
+        <span class="badge bg-primary-subtle text-primary fs-12">
+          {{ total }} total
+        </span>
+      </div>
+    </b-card-header>
+    <b-card-body class="pt-0">
+      <div
+        v-if="loading"
+        class="d-flex justify-content-center align-items-center"
+        style="height: 300px;"
+      >
+        <div
+          class="spinner-border text-primary"
+          role="status"
+        >
+          <span class="visually-hidden">Carregando...</span>
+        </div>
+      </div>
+      <apexchart
+        v-else-if="chartOptions.series.length > 0"
+        type="donut"
+        height="300"
+        :options="chartOptions"
+        :series="chartOptions.series"
+      />
+      <div
+        v-else
+        class="d-flex flex-column justify-content-center align-items-center text-muted"
+        style="height: 300px;"
+      >
+        <i class="ri-pie-chart-line fs-1 mb-2" />
+        <span>Sem dados para exibir</span>
+      </div>
+    </b-card-body>
+  </b-card>
 </template>
 
 <style scoped>

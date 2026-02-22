@@ -1,42 +1,41 @@
 <template>
-    <PageForm
-        title="Meu Perfil"
-        title-header="Meu Perfil"
-        @submit-form="submitForm"
-    >
-        <template #form>
-            <div>
-                <form id="form">
-                    <!-- Seção 1: Informações Básicas -->
-                    <BasicInfoSection
-                        v-model:form-data="formData.basicInfo"
-                        :access-level-options="accessLevels"
-                        :data="formData.basicInfo"
-                        :errors="errors"
-                        :disabled="true"
-                        :show-password-field="showPasswordField"
-                        :show-password="showPassword"
-                        @toggle-password="showPassword = !showPassword"
-                        @handle-image="handleImage"
-                        @set-image="setImage"
-                        @reset-image="resetImageBlob('user-img-file-input', formData.basicInfo, 'img')"
-                    />
-                    <!-- Seção 2: Endereço -->
-                    <AddressSection
-                        v-model:form-data="formData.address"
-                        :data="formData.address"
-                        :errors="errors"
-                        @set-address="setAddress"
-                    />
-                </form>
-            </div>
-        </template>
-    </PageForm>
+  <PageForm
+    title="Meu Perfil"
+    title-header="Meu Perfil"
+    @submit-form="submitForm"
+  >
+    <template #form>
+      <div>
+        <form id="form">
+          <!-- Seção 1: Informações Básicas -->
+          <BasicInfoSection
+            v-model:form-data="formData.basicInfo"
+            :access-level-options="accessLevels"
+            :data="formData.basicInfo"
+            :errors="errors"
+            :disabled="true"
+            :show-password-field="showPasswordField"
+            :show-password="showPassword"
+            @toggle-password="showPassword = !showPassword"
+            @handle-image="handleImage"
+            @set-image="setImage"
+            @reset-image="resetImageBlob('user-img-file-input', formData.basicInfo, 'img')"
+          />
+          <!-- Seção 2: Endereço -->
+          <AddressSection
+            v-model:form-data="formData.address"
+            :data="formData.address"
+            :errors="errors"
+            @set-address="setAddress"
+          />
+        </form>
+      </div>
+    </template>
+  </PageForm>
 </template>
 
 <script setup>
 import {onMounted, ref} from 'vue';
-import {useRoute} from 'vue-router';
 import PageForm from "@/components/base/PageForm.vue";
 import UserService from '@/services/UserService';
 import {encodeId, Forbidden} from "@/composables/functions";
@@ -46,13 +45,11 @@ import {useAuthStore} from "@/stores/auth.js";
 // Componentes das seções
 import BasicInfoSection from "@/views/users/form/BasicInfoSection.vue";
 import AddressSection from "@/views/users/form/AddressSection.vue";
-import router from "@/router";
 import env from "@/env.js";
 import {notifySuccess} from "@/composables/messages.js";
 
 // Criando instância do serviço
 const userService = new UserService();
-const route = useRoute();
 const authStore = useAuthStore();
 
 // Estado do formulário
@@ -67,9 +64,6 @@ const accessLevels = [
     {value: 'admin', label: 'Administrador'},
     {value: 'secretary', label: 'Secretaria'},
 ];
-
-// Constantes da página
-const session = "Users";
 
 async function loadUserData() {
     try {

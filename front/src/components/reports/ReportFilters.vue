@@ -1,7 +1,7 @@
 <script setup>
 import { ref, watch } from 'vue';
 
-const props = defineProps({
+defineProps({
     showStatus: {
         type: Boolean,
         default: true,
@@ -65,78 +65,106 @@ watch(filters, () => {
 </script>
 
 <template>
-    <b-card no-body class="mb-3">
-        <b-card-header class="border-0 bg-light">
-            <div class="d-flex align-items-center">
-                <i class="ri-filter-3-line me-2"></i>
-                <span class="fw-semibold">Filtros</span>
-            </div>
-        </b-card-header>
-        <b-card-body>
-            <b-row class="g-3 row-equal-height">
-                <b-col class="col-equal-height" v-if="showDateRange" sm="6" md="3">
-                    <label class="form-label fs-12">Data Inicio</label>
-                    <b-form-input
-                        v-model="filters.start_date"
-                        type="date"
-                        size="sm"
-                    />
-                </b-col>
+  <b-card
+    no-body
+    class="mb-3"
+  >
+    <b-card-header class="border-0 bg-light">
+      <div class="d-flex align-items-center">
+        <i class="ri-filter-3-line me-2" />
+        <span class="fw-semibold">Filtros</span>
+      </div>
+    </b-card-header>
+    <b-card-body>
+      <b-row class="g-3 row-equal-height">
+        <b-col
+          v-if="showDateRange"
+          class="col-equal-height"
+          sm="6"
+          md="3"
+        >
+          <label class="form-label fs-12">Data Inicio</label>
+          <b-form-input
+            v-model="filters.start_date"
+            type="date"
+            size="sm"
+          />
+        </b-col>
 
-                <b-col class="col-equal-height" v-if="showDateRange" sm="6" md="3">
-                    <label class="form-label fs-12">Data Fim</label>
-                    <b-form-input
-                        v-model="filters.end_date"
-                        type="date"
-                        size="sm"
-                    />
-                </b-col>
+        <b-col
+          v-if="showDateRange"
+          class="col-equal-height"
+          sm="6"
+          md="3"
+        >
+          <label class="form-label fs-12">Data Fim</label>
+          <b-form-input
+            v-model="filters.end_date"
+            type="date"
+            size="sm"
+          />
+        </b-col>
 
-                <b-col class="col-equal-height" v-if="showStatus" sm="6" md="3">
-                    <label class="form-label fs-12">Status</label>
-                    <b-form-select
-                        v-model="filters.status"
-                        :options="statusOptions"
-                        size="sm"
-                    />
-                </b-col>
+        <b-col
+          v-if="showStatus"
+          class="col-equal-height"
+          sm="6"
+          md="3"
+        >
+          <label class="form-label fs-12">Status</label>
+          <b-form-select
+            v-model="filters.status"
+            :options="statusOptions"
+            size="sm"
+          />
+        </b-col>
 
-                <b-col class="col-equal-height" v-if="showUser && users.length > 0" sm="6" md="3">
-                    <label class="form-label fs-12">Responsavel</label>
-                    <b-form-select
-                        v-model="filters.responsible_id"
-                        size="sm"
-                    >
-                        <option value="">Todos</option>
-                        <option
-                            v-for="user in users"
-                            :key="user.id"
-                            :value="user.id"
-                        >
-                            {{ user.name }}
-                        </option>
-                    </b-form-select>
-                </b-col>
+        <b-col
+          v-if="showUser && users.length > 0"
+          class="col-equal-height"
+          sm="6"
+          md="3"
+        >
+          <label class="form-label fs-12">Responsavel</label>
+          <b-form-select
+            v-model="filters.responsible_id"
+            size="sm"
+          >
+            <option value="">
+              Todos
+            </option>
+            <option
+              v-for="user in users"
+              :key="user.id"
+              :value="user.id"
+            >
+              {{ user.name }}
+            </option>
+          </b-form-select>
+        </b-col>
 
-                <b-col cols="12" class="col-equal-height d-flex gap-2 justify-content-end">
-                    <b-button
-                        variant="soft-secondary"
-                        size="sm"
-                        @click="clearFilters"
-                    >
-                        <i class="ri-refresh-line me-1"></i>
-                        Limpar
-                    </b-button>
-                    <b-button
-                        variant="primary"
-                        size="sm"
-                        @click="applyFilters"
-                    >
-                        <i class="ri-search-line me-1"></i>
-                        Filtrar
-                    </b-button>
-                </b-col>
-            </b-row>
-        </b-card-body>
-    </b-card>
+        <b-col
+          cols="12"
+          class="col-equal-height d-flex gap-2 justify-content-end"
+        >
+          <b-button
+            variant="soft-secondary"
+            size="sm"
+            @click="clearFilters"
+          >
+            <i class="ri-refresh-line me-1" />
+            Limpar
+          </b-button>
+          <b-button
+            variant="primary"
+            size="sm"
+            @click="applyFilters"
+          >
+            <i class="ri-search-line me-1" />
+            Filtrar
+          </b-button>
+        </b-col>
+      </b-row>
+    </b-card-body>
+  </b-card>
 </template>

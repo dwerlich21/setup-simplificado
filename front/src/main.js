@@ -47,7 +47,7 @@ AOS.init({
 const app = createApp(App);
 
 // Configurar handler de warnings personalizado
-app.config.warnHandler = (msg, instance, trace) => {
+app.config.warnHandler = (msg, _instance, _trace) => {
     // Ignorar warnings específicos
     if (msg.includes('Failed to resolve directive: b-tooltip')) return;
     if (msg.includes('expose() should be passed a plain object')) return;

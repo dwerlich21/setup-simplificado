@@ -1,42 +1,45 @@
 <template>
-    <PageForm
-        :title="formData.id ? `Editar Usuário: ${formData.basicInfo?.name || 'Usuário'}` : 'Novo Usuário'"
-        :title-header="formData.id ? 'Edição de Usuário' : 'Cadastro de Usuário'"
-        :session="session"
-        @submit-form="submitForm"
-    >
-        <template #form>
-            <div>
-                <form id="form" class="mb-3">
-                    <!-- Seção 1: Informações Básicas -->
-                    <BasicInfoSection
-                        v-model:form-data="formData.basicInfo"
-                        :access-level-options="accessLevels"
-                        :data="formData.basicInfo"
-                        :errors="errors"
-                        :show-password-field="showPasswordField"
-                        :show-password="showPassword"
-                        @toggle-password="showPassword = !showPassword"
-                        @handle-image="handleImage"
-                        @set-image="setImage"
-                        @reset-image="resetImageBlob('user-img-file-input', formData.basicInfo, 'img')"
-                    />
-                    <!-- Seção 2: Endereço -->
-                    <AddressSection
-                        v-model:form-data="formData.address"
-                        :data="formData.address"
-                        :errors="errors"
-                        @set-address="setAddress"
-                    />
+  <PageForm
+    :title="formData.id ? `Editar Usuário: ${formData.basicInfo?.name || 'Usuário'}` : 'Novo Usuário'"
+    :title-header="formData.id ? 'Edição de Usuário' : 'Cadastro de Usuário'"
+    :session="session"
+    @submit-form="submitForm"
+  >
+    <template #form>
+      <div>
+        <form
+          id="form"
+          class="mb-3"
+        >
+          <!-- Seção 1: Informações Básicas -->
+          <BasicInfoSection
+            v-model:form-data="formData.basicInfo"
+            :access-level-options="accessLevels"
+            :data="formData.basicInfo"
+            :errors="errors"
+            :show-password-field="showPasswordField"
+            :show-password="showPassword"
+            @toggle-password="showPassword = !showPassword"
+            @handle-image="handleImage"
+            @set-image="setImage"
+            @reset-image="resetImageBlob('user-img-file-input', formData.basicInfo, 'img')"
+          />
+          <!-- Seção 2: Endereço -->
+          <AddressSection
+            v-model:form-data="formData.address"
+            :data="formData.address"
+            :errors="errors"
+            @set-address="setAddress"
+          />
 
-                    <!-- Seção 3: Permissões -->
-                    <PermissionsSection
-                        v-model="formData.permissions"
-                    />
-                </form>
-            </div>
-        </template>
-    </PageForm>
+          <!-- Seção 3: Permissões -->
+          <PermissionsSection
+            v-model="formData.permissions"
+          />
+        </form>
+      </div>
+    </template>
+  </PageForm>
 </template>
 
 <script setup>
