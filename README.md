@@ -1,5 +1,7 @@
 # Setup Simplificado
 
+![Demo](https://github.com/user-attachments/assets/087685f3-e2f5-49a8-9fc5-322ad080e2d7)
+
 **[Portugues](#portugues) | [English](#english)**
 
 ---
