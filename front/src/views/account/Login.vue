@@ -7,8 +7,8 @@ import {useAuthStore} from "@/stores/auth.js";
 import {endLoading} from "@/composables/spinners";
 
 // Data
-const email = ref('');
-const password = ref('');
+const email = ref('dwerlich21@gmail.com');
+const password = ref('admin123');
 const load = ref(false);
 const authStore = useAuthStore();
 

@@ -33,6 +33,8 @@ class CheckPermission
             return $next($request);
         }
 
+        $routeName = str_replace('.update', '.edit', $routeName);
+
         // Verifica se o usuário tem a permissão
         $hasPermission = Permission::whereHas('users', function ($query) use ($user) {
                 $query->where('users.id', $user->id);

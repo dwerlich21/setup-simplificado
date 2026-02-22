@@ -62,12 +62,12 @@ class PermissionSeeder extends Seeder
         | Relatórios
         |--------------------------------------------------------------------------
         */
-        $this->createOrUpdatePermission('reports', 'Relatórios');
-        $this->createOrUpdatePermission('reports.dashboard', 'Dashboard de Relatórios', $this->getParentId('reports'));
-        $this->createOrUpdatePermission('reports.goals', 'Relatório de Metas', $this->getParentId('reports'));
-        $this->createOrUpdatePermission('reports.users', 'Relatório de Usuários', $this->getParentId('reports'));
-        $this->createOrUpdatePermission('reports.export-pdf', 'Exportar PDF', $this->getParentId('reports'));
-        $this->createOrUpdatePermission('reports.export-excel', 'Exportar Excel', $this->getParentId('reports'));
+//        $this->createOrUpdatePermission('reports', 'Relatórios');
+//        $this->createOrUpdatePermission('reports.dashboard', 'Dashboard de Relatórios', $this->getParentId('reports'));
+//        $this->createOrUpdatePermission('reports.goals', 'Relatório de Metas', $this->getParentId('reports'));
+//        $this->createOrUpdatePermission('reports.users', 'Relatório de Usuários', $this->getParentId('reports'));
+//        $this->createOrUpdatePermission('reports.export-pdf', 'Exportar PDF', $this->getParentId('reports'));
+//        $this->createOrUpdatePermission('reports.export-excel', 'Exportar Excel', $this->getParentId('reports'));
 
         /*
         |--------------------------------------------------------------------------

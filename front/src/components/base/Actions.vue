@@ -31,7 +31,7 @@ const canEdit = ref(false);
 const canDelete = ref(false);
 
 onMounted(async () => {
-    canEdit.value = await usePermissions.hasPermission(`${props.endpoint}.update`);
+    canEdit.value = await usePermissions.hasPermission(`${props.endpoint}.edit`);
     canDelete.value = await usePermissions.hasPermission(`${props.endpoint}.destroy`);
 });
 
