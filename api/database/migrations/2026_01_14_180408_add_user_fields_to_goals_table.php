@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (!Schema::hasTable('goals')) {
+            return;
+        }
+
         Schema::table('goals', function (Blueprint $table) {
             $table->foreignId('responsible_id')->after('id')->constrained('users')->onDelete('cascade');
             $table->foreignId('created_by')->after('responsible_id')->constrained('users')->onDelete('cascade');
@@ -22,6 +26,10 @@ return new class extends Migration
      */
     public function down(): void
     {
+        if (!Schema::hasTable('goals')) {
+            return;
+        }
+
         Schema::table('goals', function (Blueprint $table) {
             $table->dropForeign(['responsible_id']);
             $table->dropForeign(['created_by']);

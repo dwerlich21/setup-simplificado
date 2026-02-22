@@ -1,0 +1,136 @@
+name: Deploy API to VPS
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: # Permite trigger manual
+
+jobs:
+  deploy:
+    name: Deploy Laravel API
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Get Runner IP
+        id: ip
+        run: echo "runner_ip=$(curl -s https://api.ipify.org)" >> $GITHUB_OUTPUT
+
+      - name: Add Runner IP to Security Group
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          SECURITY_GROUP_ID: ${{ secrets.SECURITY_GROUP_ID }}
+          RUNNER_IP: ${{ steps.ip.outputs.runner_ip }}
+        run: |
+          echo "Adding runner IP ($RUNNER_IP) to Security Group..."
+          aws ec2 authorize-security-group-ingress \
+            --group-id $SECURITY_GROUP_ID \
+            --protocol tcp \
+            --port 22 \
+            --cidr $RUNNER_IP/32 \
+            --region $AWS_REGION || echo "IP may already be authorized"
+
+          echo "Waiting for Security Group to propagate..."
+          sleep 10
+
+      - name: Deploy to VPS via SSH
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT || 22 }}
+          timeout: 60s
+          command_timeout: 300s
+          script: |
+            echo "🚀 Starting deployment..."
+
+            # Navegar para o diretório do projeto ${{ secrets.PROJECT_PATH }}
+            cd ${{ secrets.PROJECT_PATH }}
+
+            # Fazer pull das últimas mudanças
+            echo "📥 Pulling latest changes..."
+            git pull origin ${{ secrets.GIT_BRANCH }}
+
+            # Instalar dependências do Composer
+            echo "📦 Installing Composer dependencies..."
+            composer install --no-dev --optimize-autoloader --no-interaction --ignore-platform-req=ext-soap
+
+            # Corrigir permissões
+            echo "🔐 Fixing permissions..."
+            sudo chown -R ${{ secrets.WEB_USER }}:${{ secrets.WEB_USER }} storage bootstrap/cache
+            sudo chmod -R 775 storage bootstrap/cache
+
+            # Criar arquivos de log do scheduler se não existirem
+            echo "📝 Creating scheduler log files..."
+            sudo touch storage/logs/scheduler.log storage/logs/cron.log
+            sudo chown ${{ secrets.WEB_USER }}:${{ secrets.WEB_USER }} storage/logs/scheduler.log storage/logs/cron.log
+            sudo chmod 664 storage/logs/scheduler.log storage/logs/cron.log
+
+            # Limpar e otimizar caches
+            echo "🧹 Clearing caches..."
+            ${{ secrets.PHP_BIN }} artisan config:clear
+            ${{ secrets.PHP_BIN }} artisan cache:clear
+            ${{ secrets.PHP_BIN }} artisan route:clear
+            ${{ secrets.PHP_BIN }} artisan view:clear
+
+            # Otimizar para produção
+            echo "⚡ Optimizing for production..."
+            ${{ secrets.PHP_BIN }} artisan config:cache
+            ${{ secrets.PHP_BIN }} artisan route:cache
+            ${{ secrets.PHP_BIN }} artisan view:cache
+
+            # Executar migrations (sem dados de seed)
+            echo "🗄️ Running database migrations..."
+            ${{ secrets.PHP_BIN }} artisan migrate --force
+
+            # Configurar cron do Laravel Scheduler
+            echo "⏰ Setting up Laravel Scheduler cron..."
+            echo "* * * * * ${{ secrets.WEB_USER }} cd ${{ secrets.PROJECT_PATH }} && /usr/bin/${{ secrets.PHP_BIN }} artisan schedule:run >> ${{ secrets.PROJECT_PATH }}/storage/logs/cron.log 2>&1" | sudo tee /etc/cron.d/${{ secrets.CRON_NAME }} > /dev/null
+            sudo chmod 644 /etc/cron.d/${{ secrets.CRON_NAME }}
+
+            # Configurar cron para limpeza de arquivos temporários
+            echo "⏰ Setting clean temp folder cron..."
+            printf '*/10 * * * * root find /tmp -maxdepth 1 -type d -name "chrome-*" -mmin +30 -exec rm -rf {} + 2>/dev/null\n' | sudo tee /etc/cron.d/${{ secrets.CRON_NAME }}-cleanup > /dev/null
+            sudo chmod 644 /etc/cron.d/${{ secrets.CRON_NAME }}-cleanup
+
+            # Remover cron antigo do usuário ubuntu (se existir)
+            crontab -l 2>/dev/null | grep -v "artisan schedule:run" | crontab - || true
+
+            # Reiniciar serviços
+            echo "🔄 Restarting services..."
+            sudo systemctl reload ${{ secrets.PHP_FPM_SERVICE }}
+            ${{ secrets.PHP_BIN }} artisan queue:restart
+
+            echo "✅ Deployment completed successfully!"
+
+      - name: Remove Runner IP from Security Group
+        if: always()
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          SECURITY_GROUP_ID: ${{ secrets.SECURITY_GROUP_ID }}
+          RUNNER_IP: ${{ steps.ip.outputs.runner_ip }}
+        run: |
+          echo "Removing runner IP ($RUNNER_IP) from Security Group..."
+          aws ec2 revoke-security-group-ingress \
+            --group-id $SECURITY_GROUP_ID \
+            --protocol tcp \
+            --port 22 \
+            --cidr $RUNNER_IP/32 \
+            --region $AWS_REGION || echo "IP may have already been removed"
+
+      - name: Notify deployment status
+        if: always()
+        run: |
+          if [ ${{ job.status }} == 'success' ]; then
+            echo "✅ Deployment successful!"
+          else
+            echo "❌ Deployment failed!"
+          fi
