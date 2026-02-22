@@ -15,6 +15,6 @@ const title = 'Dashboard';
 <template>
     <Layout>
         <PageHeader :title="title" />
-        
+
     </Layout>
 </template>

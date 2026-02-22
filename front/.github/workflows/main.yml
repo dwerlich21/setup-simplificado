@@ -4,12 +4,44 @@ on:
   push:
     branches:
       - main
-  workflow_dispatch: # Permite trigger manual
+  workflow_dispatch:
 
 jobs:
+  test:
+    name: Frontend Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'yarn'
+          cache-dependency-path: yarn.lock
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Prepare environment
+        run: cp src/env.example.js src/env.js
+
+      - name: Lint
+        run: yarn lint
+
+      - name: Run tests
+        run: yarn test:run
+
+      - name: Build
+        run: yarn build
+
   deploy:
     name: Deploy Vue Frontend
     runs-on: ubuntu-latest
+    needs: test
+    if: github.event_name == 'push'
 
     steps:
       - name: Checkout code
@@ -68,11 +100,7 @@ jobs:
 
             # Limpar builds anteriores (evita erro de permissão)
             echo "🧹 Cleaning previous builds..."
-            sudo rm -rf apps/admin/dist apps/client/dist
-
-            # Aplicar tema antes do build
-            echo "🎨 Applying citi-dash theme..."
-            cd themes/citi-dash && sh install.sh && cd ../..
+            sudo rm -rf dist
 
             # Build para produção
             echo "🔨 Building for production..."
@@ -80,8 +108,8 @@ jobs:
 
             # Corrigir permissões dos arquivos de build
             echo "🔐 Fixing permissions..."
-            sudo chown -R www-data:www-data apps/admin/dist apps/client/dist
-            sudo chmod -R 755 apps/admin/dist apps/client/dist
+            sudo chown -R www-data:www-data dist
+            sudo chmod -R 755 dist
 
             # Reiniciar Nginx para aplicar mudanças
             echo "🔄 Restarting Nginx..."
