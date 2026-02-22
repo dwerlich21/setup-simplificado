@@ -178,9 +178,8 @@
               md="4"
               class="mb-3"
             >
-              <!-- eslint-disable vue/no-mutating-props -->
               <BaseMultiselect
-                v-model="formData.type"
+                :model-value="formData.type"
                 :options="accessLevelOptions"
                 :create-option="false"
                 :disabled="disabled"
@@ -188,8 +187,8 @@
                 label="Nível de Acesso"
                 placeholder="Selecione o nível de acesso"
                 :errors="getFieldErrors('basicInfo.type')"
+                @update:model-value="updateField('type', $event)"
               />
-              <!-- eslint-enable vue/no-mutating-props -->
             </BCol>
 
             <BCol

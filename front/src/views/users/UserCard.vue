@@ -195,8 +195,7 @@
 </template>
 
 <script setup>
-/* eslint-disable no-undef */
-import {ref, onMounted, watch, onBeforeUnmount, defineProps} from 'vue';
+import {ref, reactive, onMounted, watch, onBeforeUnmount, defineProps} from 'vue';
 import {maskPhone} from "@/composables/masks";
 import {showAlertConfirm, Forbidden, getUrl} from "@/composables/functions";
 import UserService from '@/services/UserService';
@@ -224,6 +223,15 @@ const loading = ref(false);
 const search = ref(true);
 const positions = ref([]);
 const permissions = ref([]);
+
+// Estado local (componente legado - não importado por nenhuma view)
+const apiStore = reactive({
+    listCards: [],
+    deleteCard() {},
+    getCardsApi() {}
+});
+const pagination = ref({ total: 0, partial: 0 });
+const users = ref([]);
 
 // Estado do modal de permissões
 const showPermissionsModal = ref(false);

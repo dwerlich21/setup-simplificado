@@ -130,13 +130,11 @@
                   </template>
 
                   <!-- Header customizado com SortableHeader -->
-                  <!-- eslint-disable vue/no-unused-vars -->
                   <template
                     v-for="field in fields"
                     :key="'head-' + field.key"
-                    #[`head(${field.key})`]="_data"
+                    #[`head(${field.key})`]
                   >
-                    <!-- eslint-enable vue/no-unused-vars -->
                     <!-- Checkbox para seleção -->
                     <template v-if="field.key === 'check'">
                       <input

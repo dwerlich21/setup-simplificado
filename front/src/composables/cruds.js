@@ -1,5 +1,4 @@
 import {notifyError} from "./messages.js";
-import {getUrl} from "@/composables/functions";
 import {endLoading} from "@/composables/spinners";
 
 /**
@@ -88,14 +87,6 @@ export function ValidateForm(id) {
 }
 
 /**
- * Função reset da listagem
- * @param session sessão da página
- */
-export async function resetTable(session) {
-    const _searchUrl = getUrl(session); // eslint-disable-line no-unused-vars
-}
-
-/**
  * Função reset de Formulário e fechar modal
  * @param id  do formulário
  * @param button id do botão para desabilitar
@@ -103,25 +94,4 @@ export async function resetTable(session) {
 export async function resetModal(id, button) {
     document.getElementById('form').classList.remove('was-validated');
     endLoading(id, button);
-}
-
-/**
- * Função responsável por enviar os dados a store e tratar o resultado
- * @param url que vai receber os dados
- * @param formData dados do formulário já tratados
- * @param form id do formulário que vai sofrer opacidade
- * @param button id do botão para desabilitar
- * @param session sessão da página
- * @param reset se deve resetar a tabela após o envio
- */
-export async function insertORUpdate(url, formData, form, button, session, reset = true) { // eslint-disable-line no-unused-vars
-    const _data = { url, formData } // eslint-disable-line no-unused-vars
-
-    const result = undefined // TODO: implementar chamada API
-    if (result) {
-        await resetModal(form, button);
-        if (reset) await resetTable(session);
-    }
-
-    return result;
 }

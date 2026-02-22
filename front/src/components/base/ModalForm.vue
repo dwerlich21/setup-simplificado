@@ -35,7 +35,7 @@
 </template>
 
 <script setup>
-import {ref, watch, defineProps, defineEmits} from "vue";
+import {ref, defineProps, defineEmits} from "vue";
 import {ValidateForm} from "@/composables/cruds";
 import {endLoading, startLoading} from "@/composables/spinners";
 
@@ -62,9 +62,5 @@ function validation() {
     emits('submit-form');
 }
 
-// eslint-disable-next-line no-undef
-watch(() => apiStore.showModalForm, (newValue) => {
-    openedModal.value = newValue;
-});
 
 </script>

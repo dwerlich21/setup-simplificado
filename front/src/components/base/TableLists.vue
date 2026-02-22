@@ -158,7 +158,7 @@
 import {getUrl, loadTable} from "@/composables/functions";
 import {setSessions} from "@/composables/setSessions";
 import Pagination from "@/components/base/Pagination.vue";
-import {computed, onMounted, ref, defineProps, defineEmits} from "vue";
+import {computed, onMounted, reactive, ref, defineProps, defineEmits} from "vue";
 
 const props = defineProps({
     session: {
@@ -190,12 +190,15 @@ const emits = defineEmits(['update-show-card']);
 const order = ref(null);
 const order_by = ref(null);
 
-/* eslint-disable no-undef */
+const apiStore = reactive({
+    listAll: { message: null, start: 0, partial: 0, count: 0 },
+    getApi() {}
+})
+
 const listAll = computed(() => apiStore.listAll)
 const start = computed(() => apiStore.listAll.start)
 const partial = computed(() => apiStore.listAll.partial)
 const total = computed(() => apiStore.listAll.count)
-/* eslint-enable no-undef */
 
 function setOrders() {
     const objData = JSON.parse(localStorage.getItem(props.session))
@@ -228,7 +231,7 @@ function newOrder(new_order_by, new_order) {
     localStorage.setItem(props.session, JSON.stringify(obj));
 
     const url = getUrl(props.session)
-    apiStore.getApi(url); // eslint-disable-line no-undef
+    apiStore.getApi(url);
 
 }
 
@@ -237,7 +240,7 @@ function loadList() {
     if (props.session) {
         setSessions(props.session);
         const url = getUrl(props.session);
-        apiStore.getApi(url) // eslint-disable-line no-undef
+        apiStore.getApi(url)
     } else {
         setTimeout(() => {
             loadList();
@@ -254,7 +257,7 @@ function setLimit() {
     loadTable();
 
     const url = getUrl(props.session);
-    apiStore.getApi(url); // eslint-disable-line no-undef
+    apiStore.getApi(url);
 }
 
 function selectAll() {
