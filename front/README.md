@@ -1,417 +1,409 @@
-# Auth-Cookies Frontend (Vue 3)
+# Frontend — Setup Simplificado
 
-A Vue 3 frontend application with cookie-based authentication, built using the Composition API and featuring a complete CRUD system with reusable components.
+**[Portugues](#portugues) | [English](#english)**
 
-## Table of Contents
+---
 
-- [Requirements](#requirements)
-- [Installation](#installation)
-- [Architecture](#architecture)
-- [Authentication System](#authentication-system)
-- [Technical Decisions](#technical-decisions)
-- [Key Components](#key-components)
-- [State Management](#state-management)
-- [Development Commands](#development-commands)
+## Portugues
 
-## Requirements
+SPA construida com Vue 3 (Composition API), Pinia, Bootstrap Vue 3 e Axios. Autenticacao por cookies HttpOnly — o frontend nunca armazena ou manipula tokens.
 
-- Node.js 18+
-- Yarn (preferred over npm)
+### Stack
 
-## Installation
+| Camada | Tecnologia |
+|--------|-----------|
+| Framework | Vue 3.2 (Composition API) |
+| Roteamento | Vue Router 4 |
+| Estado | Pinia 3 |
+| HTTP | Axios (withCredentials) |
+| UI | Bootstrap Vue 3, Bootstrap 5 |
+| Build | Vite 4 |
+| Testes | Vitest 4, @vue/test-utils |
+| Graficos | ApexCharts |
+| Notificacoes | Notivue, SweetAlert2 |
+
+### Estrutura do projeto
+
+```
+front/
+├── src/
+│   ├── assets/
+│   │   └── scss/                    # Tema SCSS corporativo
+│   ├── components/
+│   │   ├── base/                    # 34 componentes reutilizaveis
+│   │   │   ├── PageBase.vue         #   Wrapper de pagina
+│   │   │   ├── PageForm.vue         #   Wrapper de formulario
+│   │   │   ├── Crud.vue             #   Interface CRUD completa
+│   │   │   ├── TableLists.vue       #   Tabela com ordenacao/filtros
+│   │   │   ├── Pagination.vue       #   Paginacao
+│   │   │   ├── ModalForm.vue        #   Modal de formulario
+│   │   │   ├── Filter.vue           #   Filtros avancados
+│   │   │   ├── Actions.vue          #   Botoes de acao
+│   │   │   ├── ChangeStatus.vue     #   Alternancia de status
+│   │   │   ├── BulkActions.vue      #   Acoes em massa
+│   │   │   ├── BaseMultiselect.vue  #   Input multiselect
+│   │   │   ├── DocumentUploader.vue #   Upload de arquivos
+│   │   │   ├── Cropper.vue          #   Recorte de imagem
+│   │   │   ├── Editor.vue           #   Editor de texto rico
+│   │   │   ├── KanbanBoard.vue      #   Quadro kanban
+│   │   │   ├── GraphicColumns.vue   #   Grafico de colunas
+│   │   │   ├── GraphicLine.vue      #   Grafico de linhas
+│   │   │   ├── StatusMetricsCards.vue # Cards de metricas
+│   │   │   ├── MapData.vue          #   Mapa (Leaflet)
+│   │   │   ├── Avatar.vue           #   Avatar de usuario
+│   │   │   ├── Badge.vue            #   Badge/tag
+│   │   │   └── ...
+│   │   └── widgets/                 # Widgets do dashboard
+│   ├── composables/                 # 15 composables
+│   │   ├── useCrud.js               #   Estado CRUD completo
+│   │   ├── messages.js              #   notifySuccess(), notifyError()
+│   │   ├── setSessions.js           #   Persistencia de filtros (localStorage)
+│   │   ├── functions.js             #   Utilitarios (encoding, validacao)
+│   │   ├── masks.js                 #   Mascaras de input (CPF, telefone)
+│   │   ├── cruds.js                 #   Configuracao de CRUD
+│   │   ├── convertVariables.js      #   Conversao de variaveis
+│   │   ├── manageDates.js           #   Manipulacao de datas
+│   │   ├── enumsData.js             #   Dados de enums
+│   │   ├── useGlobalSpinner.js      #   Loading global
+│   │   ├── useRegionalSpinner.js    #   Loading regional
+│   │   ├── useBreakpoints.js        #   Breakpoints responsivos
+│   │   └── __tests__/               #   Testes dos composables
+│   ├── directives/
+│   │   └── permission.js            # v-permission (visibilidade por permissao)
+│   ├── http/
+│   │   └── index.js                 # Axios com withCredentials + interceptors
+│   ├── router/
+│   │   └── index.js                 # Rotas com guards de autenticacao
+│   ├── services/
+│   │   ├── BaseService.js           # index(), getById(), save(), delete(), bulk...
+│   │   ├── UserService.js
+│   │   ├── AuditService.js
+│   │   └── NotificationService.js
+│   ├── stores/
+│   │   ├── auth.js                  # Usuario, permissoes, enums, login/logout
+│   │   ├── layout.js                # Sidebar, tema
+│   │   ├── notification.js          # Gerenciamento de notificacoes
+│   │   └── landingPage.js
+│   ├── utils/
+│   │   └── __tests__/               # Testes de utilitarios
+│   └── views/
+│       ├── account/                 # Login, recuperacao de senha
+│       ├── audit/                   # Logs de auditoria
+│       ├── dashboard/               # Dashboard
+│       ├── notifications/           # Notificacoes
+│       ├── profile/                 # Meu perfil
+│       └── users/                   # Gestao de usuarios
+│           └── form/                #   Formulario de usuario
+├── src/env.js                       # Configuracao de ambiente (gitignored)
+├── src/env.example.js               # Template de configuracao
+├── makeCrud.js                      # Gerador de CRUD
+├── vite.config.js
+└── .eslintrc.cjs
+```
+
+### Instalacao
 
 ```bash
-# Navigate to front directory
 cd front
-
-# Copy environment configuration
-cd src
-cp env.example.js env.js
-cd ..
-
-# Install dependencies (use yarn, not npm)
+cp src/env.example.js src/env.js
+# Ajuste as variaveis em src/env.js
 yarn install
-
-# Start development server
 yarn dev
 ```
 
-### Environment Configuration
+O frontend estara disponivel em `http://localhost:8080`.
 
-Edit `src/env.js` with your settings:
+### Configuracao de ambiente
+
+Edite `src/env.js`:
 
 ```javascript
-export default {
-  API_URL: 'http://localhost:8000/api',
-  APP_NAME: 'Auth Cookies',
-  // Add other environment variables as needed
+const env = {
+    url: 'http://localhost:8000/',
+    api: 'http://localhost:8000/api/v1/',
+    baseUrl: 'http://localhost:8080/',
+    title: 'Libertas',
 }
+
+export default env;
 ```
 
-## Architecture
+### Autenticacao
 
-### Directory Structure
+O frontend depende inteiramente de cookies HttpOnly setados pelo backend:
 
 ```
-src/
-├── assets/
-│   └── scss/           # SCSS styles with corporate theme
-├── components/
-│   ├── base/           # Reusable base components
-│   │   ├── Crud.vue    # Complete CRUD component
-│   │   ├── TableLists.vue
-│   │   ├── ModalForm.vue
-│   │   └── ...
-│   └── widgets/        # Dashboard widgets
-├── composables/        # Vue 3 composables
-│   ├── cruds.js        # CRUD operation helpers
-│   ├── messages.js     # Notification helpers
-│   └── functions.js    # Utility functions
-├── http/
-│   └── index.js        # Axios configuration with interceptors
-├── router/
-│   └── index.js        # Vue Router with auth guards
-├── services/           # API service classes
-│   ├── BaseService.js  # Base service with CRUD methods
-│   ├── AuthService.js
-│   └── UserService.js
-├── stores/             # Pinia stores
-│   ├── auth.js         # Authentication state
-│   └── layout.js       # Layout/UI state
-└── views/              # Page components
-    ├── auth/           # Login, Register, Password Reset
-    └── users/          # User management pages
+1. Usuario envia credenciais
+              ↓
+2. API valida e seta cookies HttpOnly (access_token, refresh_token)
+              ↓
+3. Axios envia cookies automaticamente (withCredentials: true)
+              ↓
+4. Refresh de token acontece de forma transparente no backend
 ```
 
-### Design Patterns
+O frontend nunca armazena nem manipula tokens. O browser cuida da transmissao dos cookies.
 
-#### Composables Pattern
-Vue 3 Composition API composables for reusable logic:
-- `useCrud()` - Complete CRUD operations with form handling
-- `useMessages()` - Notification system integration
-- `useFunctions()` - Common utility functions
+### Padrao de pagina CRUD
 
-#### Service Layer Pattern
-API interactions are encapsulated in service classes:
-- Extends `BaseService` for consistent CRUD operations
-- Handles request/response transformation
-- Centralizes endpoint definitions
+Uma pagina CRUD tipica combina:
 
-#### Base Components Pattern
-Reusable components for common UI patterns:
-- `Crud.vue` - Full CRUD interface (table + modal form)
-- `TableLists.vue` - Configurable data tables
-- `ModalForm.vue` - Form modals with validation
+1. **Arquivo de constantes** (`src/constants/`) — Colunas da tabela, valores padrao do formulario, filtros e tipos de acao
+2. **View** (`src/views/`) — Pagina usando componentes base (`Filter`, `TableLists`, `ModalForm`, `Actions`, `ChangeStatus`)
+3. **Sessao** (`src/composables/setSessions.js`) — Configuracao de persistencia de filtros
+4. **Rota** (`src/router/`) — Rota com `meta: { authRequired: true }`
 
-## Authentication System
+#### Gerador de CRUD
 
-### How It Works
+```bash
+node makeCrud.js nomeDaEntidade
+```
+
+Gera automaticamente: constantes, view, sessao e rota.
+
+### Camada de servico
+
+Services estendem `BaseService.js` que fornece:
+
+- `index()` — Listagem paginada
+- `getById()` — Busca por ID
+- `save()` — Criar ou atualizar
+- `delete()` — Excluir
+- `bulkDelete()` — Exclusao em massa
+- `bulkChangeActive()` — Alteracao de status em massa
+
+### Stores (Pinia)
+
+| Store | Responsabilidade |
+|-------|-----------------|
+| `auth.js` | Usuario logado, permissoes, enums, login/logout/refresh |
+| `layout.js` | Estado do sidebar, tema |
+| `notification.js` | Gerenciamento de notificacoes |
+
+### Diretiva de permissao
+
+Controle de visibilidade baseado em permissoes do usuario:
+
+```vue
+<button v-permission="'users.create'">Novo Usuario</button>
+```
+
+### Testes
+
+```bash
+yarn test:run    # Todos os testes (101)
+yarn test        # Modo watch
+```
+
+Os testes cobrem composables (`functions`, `masks`, `convertVariables`), stores (`auth`) e utilitarios (`permissions`).
+
+### Comandos uteis
+
+```bash
+yarn install     # Instalar dependencias (usar yarn, nao npm)
+yarn dev         # Servidor de desenvolvimento (porta 8080)
+yarn build       # Build de producao
+yarn lint        # ESLint com auto-fix
+yarn test:run    # Executar testes
+```
+
+---
+
+## English
+
+SPA built with Vue 3 (Composition API), Pinia, Bootstrap Vue 3 and Axios. HttpOnly cookie authentication — the frontend never stores or handles tokens.
+
+### Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Framework | Vue 3.2 (Composition API) |
+| Routing | Vue Router 4 |
+| State | Pinia 3 |
+| HTTP | Axios (withCredentials) |
+| UI | Bootstrap Vue 3, Bootstrap 5 |
+| Build | Vite 4 |
+| Testing | Vitest 4, @vue/test-utils |
+| Charts | ApexCharts |
+| Notifications | Notivue, SweetAlert2 |
+
+### Project structure
+
+```
+front/
+├── src/
+│   ├── assets/
+│   │   └── scss/                    # Corporate SCSS theme
+│   ├── components/
+│   │   ├── base/                    # 34 reusable components
+│   │   │   ├── PageBase.vue         #   Page wrapper
+│   │   │   ├── PageForm.vue         #   Form wrapper
+│   │   │   ├── Crud.vue             #   Complete CRUD interface
+│   │   │   ├── TableLists.vue       #   Table with sorting/filters
+│   │   │   ├── Pagination.vue       #   Pagination
+│   │   │   ├── ModalForm.vue        #   Form modal
+│   │   │   ├── Filter.vue           #   Advanced filters
+│   │   │   ├── Actions.vue          #   Action buttons
+│   │   │   ├── ChangeStatus.vue     #   Status toggle
+│   │   │   ├── BulkActions.vue      #   Bulk actions
+│   │   │   ├── BaseMultiselect.vue  #   Multiselect input
+│   │   │   ├── DocumentUploader.vue #   File upload
+│   │   │   ├── Cropper.vue          #   Image cropping
+│   │   │   ├── Editor.vue           #   Rich text editor
+│   │   │   ├── KanbanBoard.vue      #   Kanban board
+│   │   │   ├── GraphicColumns.vue   #   Column chart
+│   │   │   ├── GraphicLine.vue      #   Line chart
+│   │   │   ├── StatusMetricsCards.vue # Metric cards
+│   │   │   ├── MapData.vue          #   Map (Leaflet)
+│   │   │   ├── Avatar.vue           #   User avatar
+│   │   │   ├── Badge.vue            #   Badge/tag
+│   │   │   └── ...
+│   │   └── widgets/                 # Dashboard widgets
+│   ├── composables/                 # 15 composables
+│   │   ├── useCrud.js               #   Complete CRUD state
+│   │   ├── messages.js              #   notifySuccess(), notifyError()
+│   │   ├── setSessions.js           #   Filter persistence (localStorage)
+│   │   ├── functions.js             #   Utilities (encoding, validation)
+│   │   ├── masks.js                 #   Input masks (CPF, phone)
+│   │   └── __tests__/               #   Composable tests
+│   ├── directives/
+│   │   └── permission.js            # v-permission (permission-based visibility)
+│   ├── http/
+│   │   └── index.js                 # Axios with withCredentials + interceptors
+│   ├── router/
+│   │   └── index.js                 # Routes with auth guards
+│   ├── services/
+│   │   ├── BaseService.js           # index(), getById(), save(), delete(), bulk...
+│   │   ├── UserService.js
+│   │   ├── AuditService.js
+│   │   └── NotificationService.js
+│   ├── stores/
+│   │   ├── auth.js                  # User, permissions, enums, login/logout
+│   │   ├── layout.js                # Sidebar, theme
+│   │   └── notification.js          # Notification management
+│   └── views/
+│       ├── account/                 # Login, password recovery
+│       ├── audit/                   # Audit logs
+│       ├── dashboard/               # Dashboard
+│       ├── notifications/           # Notifications
+│       ├── profile/                 # My profile
+│       └── users/                   # User management
+│           └── form/                #   User form
+├── src/env.js                       # Environment config (gitignored)
+├── src/env.example.js               # Config template
+├── makeCrud.js                      # CRUD generator
+├── vite.config.js
+└── .eslintrc.cjs
+```
+
+### Installation
+
+```bash
+cd front
+cp src/env.example.js src/env.js
+# Adjust the variables in src/env.js
+yarn install
+yarn dev
+```
+
+The frontend will be available at `http://localhost:8080`.
+
+### Environment configuration
+
+Edit `src/env.js`:
+
+```javascript
+const env = {
+    url: 'http://localhost:8000/',
+    api: 'http://localhost:8000/api/v1/',
+    baseUrl: 'http://localhost:8080/',
+    title: 'Libertas',
+}
+
+export default env;
+```
+
+### Authentication
 
 The frontend relies entirely on HttpOnly cookies set by the backend:
 
 ```
-1. User submits login form
+1. User submits credentials
               ↓
-2. AuthService.login() sends credentials to API
+2. API validates and sets HttpOnly cookies (access_token, refresh_token)
               ↓
-3. API validates and sets HttpOnly cookies (access_token, refresh_token)
+3. Axios sends cookies automatically (withCredentials: true)
               ↓
-4. Frontend receives user data (no token handling needed!)
-              ↓
-5. Subsequent requests automatically include cookies
-              ↓
-6. Token refresh happens transparently on backend
+4. Token refresh happens transparently on the backend
 ```
 
-### Why No Token Storage in Frontend?
+The frontend never stores or handles tokens. The browser handles cookie transmission.
 
-1. **Security**: HttpOnly cookies cannot be accessed by JavaScript (XSS protection)
-2. **Simplicity**: No need to manage token storage, refresh logic, or attach headers
-3. **Automatic**: Browser handles cookie transmission automatically
+### CRUD page pattern
 
-### Authentication Flow Implementation
+A typical CRUD page combines:
 
-#### Login (`src/services/AuthService.js`)
-```javascript
-async login(credentials) {
-  const response = await http.post('/auth/login', credentials)
-  // Cookies are automatically set by browser from response
-  return response.data.user
-}
-```
+1. **Constants file** (`src/constants/`) — Table columns, form defaults, filters and action types
+2. **View** (`src/views/`) — Page using base components (`Filter`, `TableLists`, `ModalForm`, `Actions`, `ChangeStatus`)
+3. **Session** (`src/composables/setSessions.js`) — Filter persistence configuration
+4. **Route** (`src/router/`) — Route with `meta: { authRequired: true }`
 
-#### Axios Configuration (`src/http/index.js`)
-```javascript
-const http = axios.create({
-  baseURL: env.API_URL,
-  withCredentials: true, // Essential! Sends cookies with requests
-})
-```
-
-#### Route Guards (`src/router/index.js`)
-```javascript
-router.beforeEach(async (to, from, next) => {
-  const authStore = useAuthStore()
-
-  if (to.meta.requiresAuth && !authStore.isAuthenticated) {
-    next('/login')
-  } else {
-    next()
-  }
-})
-```
-
-## Technical Decisions
-
-### Why Vue 3 Composition API?
-
-- **Better TypeScript support**: Improved type inference
-- **Code organization**: Logic can be grouped by feature, not option type
-- **Reusability**: Composables enable clean logic extraction
-- **Performance**: Better tree-shaking and bundle optimization
-
-### Why Pinia over Vuex?
-
-- **Simpler API**: No mutations, just state and actions
-- **TypeScript native**: Built with TypeScript from the ground up
-- **Devtools support**: Full Vue Devtools integration
-- **Modular by design**: Each store is independent
-
-### Why Yarn over npm?
-
-- **Deterministic**: Lockfile ensures consistent installs
-- **Faster**: Parallel installation and caching
-- **Workspaces**: Better monorepo support
-
-### Why Bootstrap Vue 3?
-
-- **Rapid development**: Pre-built components
-- **Consistency**: Uniform styling across the application
-- **Customizable**: SCSS variables for theming
-- **Accessibility**: Built-in ARIA support
-
-### Why Axios?
-
-- **Interceptors**: Easy request/response transformation
-- **Cancellation**: Request cancellation support
-- **Automatic transforms**: JSON parsing, error handling
-- **Browser + Node**: Universal support
-
-## Key Components
-
-### Crud.vue (`src/components/base/Crud.vue`)
-
-Complete CRUD interface combining table and form:
-
-```vue
-<template>
-  <Crud
-    :service="userService"
-    :columns="columns"
-    :form-fields="formFields"
-    title="Users"
-  />
-</template>
-```
-
-Features:
-- Automatic pagination
-- Search and filtering
-- Create/Edit/Delete actions
-- Form validation
-- Loading states
-
-### useCrud Composable (`src/composables/cruds.js`)
-
-Provides CRUD operations for any entity:
-
-```javascript
-const {
-  items,
-  loading,
-  pagination,
-  fetchItems,
-  createItem,
-  updateItem,
-  deleteItem,
-} = useCrud(userService)
-```
-
-### BaseService (`src/services/BaseService.js`)
-
-Base class for API services:
-
-```javascript
-class UserService extends BaseService {
-  constructor() {
-    super('/users')
-  }
-
-  // Custom methods
-  async changePassword(id, data) {
-    return this.http.post(`${this.endpoint}/${id}/change-password`, data)
-  }
-}
-```
-
-## State Management
-
-### Auth Store (`src/stores/auth.js`)
-
-Manages authentication state:
-
-```javascript
-export const useAuthStore = defineStore('auth', {
-  state: () => ({
-    user: null,
-    isAuthenticated: false,
-  }),
-
-  actions: {
-    async login(credentials) {
-      const user = await authService.login(credentials)
-      this.user = user
-      this.isAuthenticated = true
-    },
-
-    async logout() {
-      await authService.logout()
-      this.user = null
-      this.isAuthenticated = false
-    },
-
-    async checkAuth() {
-      try {
-        const user = await authService.me()
-        this.user = user
-        this.isAuthenticated = true
-      } catch {
-        this.isAuthenticated = false
-      }
-    },
-  },
-})
-```
-
-### Layout Store (`src/stores/layout.js`)
-
-Manages UI state (sidebar, theme, etc.):
-
-```javascript
-export const useLayoutStore = defineStore('layout', {
-  state: () => ({
-    sidebarCollapsed: false,
-    theme: 'light',
-  }),
-
-  actions: {
-    toggleSidebar() {
-      this.sidebarCollapsed = !this.sidebarCollapsed
-    },
-  },
-})
-```
-
-## HTTP Configuration
-
-### Axios Setup (`src/http/index.js`)
-
-```javascript
-import axios from 'axios'
-import env from '@/env'
-
-const http = axios.create({
-  baseURL: env.API_URL,
-  withCredentials: true, // Required for cookies!
-  headers: {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json',
-  },
-})
-
-// Response interceptor for error handling
-http.interceptors.response.use(
-  response => response,
-  error => {
-    if (error.response?.status === 401) {
-      // Redirect to login
-      window.location.href = '/login'
-    }
-    return Promise.reject(error)
-  }
-)
-
-export default http
-```
-
-## Development Commands
+#### CRUD generator
 
 ```bash
-# Install dependencies
-yarn install
-
-# Start development server with hot-reload
-yarn dev
-
-# Build for production
-yarn build
-
-# Preview production build
-yarn preview
-
-# Lint and fix files
-yarn lint
-
-# Type check (if using TypeScript)
-yarn type-check
+node makeCrud.js entityName
 ```
 
-## Project Configuration
+Automatically generates: constants, view, session and route.
 
-### Vite Configuration (`vite.config.js`)
+### Service layer
 
-Key settings:
-- Path aliases (`@` for `src/`)
-- Proxy configuration for API requests (optional)
-- Build optimization settings
+Services extend `BaseService.js` which provides:
 
-### ESLint + Prettier
+- `index()` — Paginated listing
+- `getById()` — Fetch by ID
+- `save()` — Create or update
+- `delete()` — Delete
+- `bulkDelete()` — Bulk delete
+- `bulkChangeActive()` — Bulk status change
 
-Code quality tools configured for:
-- Vue 3 specific rules
-- Composition API best practices
-- Consistent code formatting
+### Stores (Pinia)
 
-## Browser Support
+| Store | Responsibility |
+|-------|---------------|
+| `auth.js` | Logged user, permissions, enums, login/logout/refresh |
+| `layout.js` | Sidebar state, theme |
+| `notification.js` | Notification management |
 
-- Chrome (latest)
-- Firefox (latest)
-- Safari (latest)
-- Edge (latest)
+### Permission directive
 
-Note: HttpOnly cookies require HTTPS in production for the `Secure` flag.
+Permission-based visibility control:
 
-## Troubleshooting
+```vue
+<button v-permission="'users.create'">New User</button>
+```
 
-### Cookies not being sent
+### Tests
 
-1. Ensure `withCredentials: true` in Axios config
-2. Check CORS configuration on backend
-3. Verify `SANCTUM_STATEFUL_DOMAINS` includes frontend URL
+```bash
+yarn test:run    # All tests (101)
+yarn test        # Watch mode
+```
 
-### 401 errors after login
+Tests cover composables (`functions`, `masks`, `convertVariables`), stores (`auth`) and utilities (`permissions`).
 
-1. Check if cookies are being set (DevTools > Application > Cookies)
-2. Verify backend `SESSION_DOMAIN` matches frontend domain
-3. Ensure frontend and backend are on same domain (or properly configured for cross-origin)
+### Useful commands
 
-### CORS errors
+```bash
+yarn install     # Install dependencies (use yarn, not npm)
+yarn dev         # Dev server (port 8080)
+yarn build       # Production build
+yarn lint        # ESLint with auto-fix
+yarn test:run    # Run tests
+```
 
-Backend must allow:
-- Origin: Your frontend URL
-- Credentials: true
-- Headers: Content-Type, Accept, X-Requested-With
+---
 
-## License
+## License / Licenca
 
-This project is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+MIT
