@@ -2,6 +2,7 @@
 
 namespace App\Guards;
 
+use App\Services\CookieManager;
 use Laravel\Sanctum\Guard;
 use Illuminate\Http\Request;
 
@@ -15,7 +16,7 @@ class CookieTokenGuard extends Guard
         }
 
         // Then try the cookie
-        if ($token = $request->cookie('access_token')) {
+        if ($token = $request->cookie(CookieManager::accessTokenCookieName())) {
             return $token;
         }
 

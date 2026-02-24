@@ -4,6 +4,7 @@ namespace Tests\Feature\Auth;
 
 use App\Models\AuditLog;
 use App\Models\User;
+use App\Services\CookieManager;
 use Tests\TestCase;
 
 class LoginTest extends TestCase
@@ -23,8 +24,8 @@ class LoginTest extends TestCase
         $response->assertStatus(200)
             ->assertJsonStructure(['user', 'success', 'message'])
             ->assertJson(['success' => true])
-            ->assertCookie('access_token')
-            ->assertCookie('refresh_token');
+            ->assertCookie(CookieManager::accessTokenCookieName())
+            ->assertCookie(CookieManager::refreshTokenCookieName());
     }
 
     public function test_login_with_invalid_email_returns_401(): void

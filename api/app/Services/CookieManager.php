@@ -3,18 +3,39 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Cookie as SymfonyCookie;
 
 class CookieManager
 {
-    // Nomes dos cookies
-    public const ACCESS_TOKEN_COOKIE = 'access_token';
-    public const REFRESH_TOKEN_COOKIE = 'refresh_token';
-    
     // Tempos de expiração em minutos
     public const ACCESS_TOKEN_EXPIRY = 10; // 10 minutos
     public const REFRESH_TOKEN_EXPIRY = 1440; // 1 dia (24 horas)
-    
+
+    /**
+     * Retorna o prefixo baseado no APP_NAME (mesmo padrão do Laravel para session/cache)
+     */
+    private static function prefix(): string
+    {
+        return Str::slug(config('app.name', 'laravel'), '_');
+    }
+
+    /**
+     * Retorna o nome do cookie de access token com prefixo
+     */
+    public static function accessTokenCookieName(): string
+    {
+        return self::prefix() . '_access_token';
+    }
+
+    /**
+     * Retorna o nome do cookie de refresh token com prefixo
+     */
+    public static function refreshTokenCookieName(): string
+    {
+        return self::prefix() . '_refresh_token';
+    }
+
     /**
      * Cria um cookie de token com as configurações padrão de segurança
      *
@@ -37,7 +58,7 @@ class CookieManager
             config('session.same_site', 'lax')
         );
     }
-    
+
     /**
      * Cria um cookie de access token
      *
@@ -47,12 +68,12 @@ class CookieManager
     public function createAccessTokenCookie(string $token): SymfonyCookie
     {
         return $this->createTokenCookie(
-            self::ACCESS_TOKEN_COOKIE, 
-            $token, 
+            self::accessTokenCookieName(),
+            $token,
             self::ACCESS_TOKEN_EXPIRY
         );
     }
-    
+
     /**
      * Cria um cookie de refresh token
      *
@@ -62,12 +83,12 @@ class CookieManager
     public function createRefreshTokenCookie(string $token): SymfonyCookie
     {
         return $this->createTokenCookie(
-            self::REFRESH_TOKEN_COOKIE, 
-            $token, 
+            self::refreshTokenCookieName(),
+            $token,
             self::REFRESH_TOKEN_EXPIRY
         );
     }
-    
+
     /**
      * Remove o cookie de access token
      *
@@ -77,7 +98,7 @@ class CookieManager
     {
         // Criar cookie com valor vazio e tempo expirado para garantir remoção
         return Cookie::make(
-            self::ACCESS_TOKEN_COOKIE,
+            self::accessTokenCookieName(),
             '',
             -1,       // tempo negativo para expirar imediatamente
             config('session.path', '/'),
@@ -88,7 +109,7 @@ class CookieManager
             config('session.same_site', 'lax')
         );
     }
-    
+
     /**
      * Remove o cookie de refresh token
      *
@@ -98,7 +119,7 @@ class CookieManager
     {
         // Criar cookie com valor vazio e tempo expirado para garantir remoção
         return Cookie::make(
-            self::REFRESH_TOKEN_COOKIE,
+            self::refreshTokenCookieName(),
             '',
             -1,       // tempo negativo para expirar imediatamente
             config('session.path', '/'),
@@ -109,7 +130,7 @@ class CookieManager
             config('session.same_site', 'lax')
         );
     }
-    
+
     /**
      * Renova os cookies com os mesmos tokens mas com novos tempos de expiração
      *
@@ -124,7 +145,7 @@ class CookieManager
             $this->createRefreshTokenCookie($refreshToken)
         ];
     }
-    
+
     /**
      * Obtém o access token do request
      *
@@ -133,9 +154,9 @@ class CookieManager
      */
     public function getAccessTokenFromRequest($request): ?string
     {
-        return $request->cookie(self::ACCESS_TOKEN_COOKIE);
+        return $request->cookie(self::accessTokenCookieName());
     }
-    
+
     /**
      * Obtém o refresh token do request
      *
@@ -144,6 +165,6 @@ class CookieManager
      */
     public function getRefreshTokenFromRequest($request): ?string
     {
-        return $request->cookie(self::REFRESH_TOKEN_COOKIE);
+        return $request->cookie(self::refreshTokenCookieName());
     }
 }

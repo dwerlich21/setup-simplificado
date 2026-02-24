@@ -1,7 +1,9 @@
 node_modules
 
-/src/env.js
-
 yarn-error.log
 dist/.htaccess
 dist
+
+.env
+.env.*
+!.env.*.example
