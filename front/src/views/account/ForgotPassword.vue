@@ -1,6 +1,7 @@
 <script setup>
 import {ref} from 'vue';
-import Lottie from "@/components/widgets/lottie.vue";
+import { defineAsyncComponent } from 'vue';
+const Lottie = defineAsyncComponent(() => import("@/components/widgets/lottie.vue"));
 import animationData from "@/components/widgets/rhvddzym.json";
 import http from "@/http";
 import {notifyError, notifySuccess} from "@/composables/messages";

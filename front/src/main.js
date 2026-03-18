@@ -12,7 +12,7 @@ import { permission } from './directives/permission';
 import BootstrapVue3 from 'bootstrap-vue-3';
 import { vBTooltip } from 'bootstrap-vue-3';
 import vClickOutside from "click-outside-vue3";
-import VueApexCharts from "vue3-apexcharts";
+
 import Maska from 'maska';
 
 import '@/assets/scss/config/corporate/app.scss';
@@ -73,7 +73,6 @@ app
     .use(notivue)
     .use(pinia)
     .use(router)
-    .use(VueApexCharts)
     .use(BootstrapVue3)
     .use(Maska)
     .use(vClickOutside).mount('#app');

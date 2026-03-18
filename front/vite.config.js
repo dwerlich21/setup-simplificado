@@ -39,12 +39,18 @@ export default defineConfig({
     }
   },
   build: {
-    rollupOptions: {
+    rolldownOptions: {
       output: {
-        manualChunks: {
-          'vendor': ['vue', 'vue-router', 'pinia', 'axios'],
-          'bootstrap': ['bootstrap', 'bootstrap-vue-3', '@popperjs/core'],
-          'utils': ['lodash-es']
+        manualChunks(id) {
+          if (id.includes('node_modules/vue/') || id.includes('node_modules/vue-router/') || id.includes('node_modules/pinia/') || id.includes('node_modules/axios/')) {
+            return 'vendor'
+          }
+          if (id.includes('node_modules/bootstrap') || id.includes('node_modules/@popperjs/core')) {
+            return 'bootstrap'
+          }
+          if (id.includes('node_modules/lodash-es')) {
+            return 'utils'
+          }
         }
       }
     }

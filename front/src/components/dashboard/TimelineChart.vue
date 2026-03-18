@@ -40,9 +40,10 @@
   </b-card>
 </template>
 <script setup>
-import { ref, reactive, onMounted } from 'vue';
+import { ref, reactive, onMounted, defineAsyncComponent } from 'vue';
 import http from '@/http';
 import { getChartColors } from '@/utils/themeColors';
+const apexchart = defineAsyncComponent(() => import("vue3-apexcharts"));
 
 const loading = ref(true);
 

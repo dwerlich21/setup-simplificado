@@ -1,7 +1,8 @@
 <script setup>
 import { onMounted } from 'vue';
 import animationData from "@/components/widgets/hzomhqxz.json";
-import Lottie from "@/components/widgets/lottie.vue";
+import { defineAsyncComponent } from 'vue';
+const Lottie = defineAsyncComponent(() => import("@/components/widgets/lottie.vue"));
 import { useAuthStore } from "@/stores/auth.js";
 
 // Data

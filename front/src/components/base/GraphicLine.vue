@@ -6,8 +6,14 @@ import {
     // floatToDecimal
 } from "@/composables/functions";
 import http from "@/http";
+import { defineAsyncComponent } from 'vue';
+const VueApexCharts = defineAsyncComponent(() => import("vue3-apexcharts"));
 
 export default {
+
+    components: {
+        apexchart: VueApexCharts,
+    },
 
     props: {
         url: { type: String, default: '' },

@@ -2,6 +2,8 @@
 import { ref, reactive, onMounted, computed } from 'vue';
 import http from '@/http';
 import { getThemeColors, getChartColors } from '@/utils/themeColors';
+import { defineAsyncComponent } from 'vue';
+const apexchart = defineAsyncComponent(() => import("vue3-apexcharts"));
 
 const loading = ref(true);
 
