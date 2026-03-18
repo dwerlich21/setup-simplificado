@@ -33,7 +33,7 @@ export default defineConfig({
     preprocessorOptions: {
       scss: {
         quietDeps: true,
-        silenceDeprecations: ['import', 'legacy-js-api', 'global-builtin', 'color-functions', 'mixed-decls'],
+        silenceDeprecations: ['import', 'legacy-js-api', 'global-builtin', 'color-functions', 'if-function'],
         includePaths: ['node_modules']
       }
     }
