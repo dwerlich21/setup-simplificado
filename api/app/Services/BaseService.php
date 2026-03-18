@@ -204,6 +204,22 @@ abstract class BaseService
             }
         }
 
+        if (!empty($this->request->get('global'))) {
+            $search = $this->request->get('global');
+            $fillable = $this->repository->getModel()->getFillable();
+            $relations = $this->repository->getModel()->globalSearchRelations ?? [];
+
+            $this->result = $this->result->where(function ($query) use ($search, $fillable, $relations) {
+                $query->whereAny($fillable, 'like', '%' . $search . '%');
+
+                foreach ($relations as $relation => $columns) {
+                    $query->orWhereHas($relation, function ($q) use ($search, $columns) {
+                        $q->whereAny($columns, 'like', '%' . $search . '%');
+                    });
+                }
+            });
+        }
+
         // Aplicar query personalizada
         if ($customQuery && is_callable($customQuery)) {
             $customQuery($this->result);
